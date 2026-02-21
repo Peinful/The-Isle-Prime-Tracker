@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Isle: Prime Elder Checklist</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background-color: #0a0c0f;
+            color: #d1d5db;
+            background-image: radial-gradient(circle at center, #1a202c 0%, #0a0c0f 100%);
+            min-height: 100vh;
+        }
+        .glass-panel {
+            background: rgba(31, 41, 55, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(75, 85, 99, 0.3);
+        }
+        .checkbox-custom {
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            accent-color: #10b981;
+        }
+        .progress-glow {
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
+        }
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            opacity: 1;
+        }
+        select, input[type="text"] {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(75, 85, 99, 0.5);
+        }
+        .hidden-objective {
+            display: none !important;
+        }
+        .dino-preview-img {
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+        .dino-preview-img:hover {
+            transform: scale(1.1);
+        }
+        .isle-logo {
+            filter: drop-shadow(0 0 8px rgba(16, 185, 129, 0.3));
+            max-width: 240px;
+        }
+        #privacy-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.85);
+            z-index: 50;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <div id="privacy-modal">
+        <div class="glass-panel max-w-md w-full rounded-2xl p-8 border-emerald-500/30">
+            <h2 class="text-xl font-bold text-emerald-500 mb-4">Data & Privacy Notice</h2>
+            <p class="text-sm text-gray-300 mb-4 leading-relaxed">
+                To keep track of your dinosaur's progress, this website saves your profiles to your browser's <strong>Local Storage</strong>.
+            </p>
+            <ul class="text-xs text-gray-400 space-y-2 mb-6 list-disc pl-4">
+                <li>No data is sent to a server.</li>
+                <li>No personal information is collected.</li>
+                <li>If you clear your browser cache, your progress will be lost.</li>
+            </ul>
+            <button onclick="acceptPrivacy()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl transition-all">
+                I Understand
+            </button>
+        </div>
+    </div>
+
+    <div class="max-w-2xl mx-auto">
+        <header class="flex flex-col items-center mb-10">
+            <!-- Replace this URL with your preferred Isle Logo URL -->
+            <img src="https://static.wikia.nocookie.net/the-isle-world/images/e/e4/The_Isle_Logo.png" alt="The Isle Logo" class="isle-logo mb-4">
+            <div class="h-px w-24 bg-gradient-to-r from-transparent via-emerald-500 to-transparent mb-4"></div>
+            <h1 class="text-2xl font-bold text-emerald-500 tracking-widest uppercase">Prime Elder Pursuit</h1>
+            <p class="text-gray-500 text-[10px] uppercase font-bold tracking-tighter opacity-70">Lineage Eligibility Tracker</p>
+        </header>
+
+        <div class="glass-panel rounded-2xl p-6 mb-6">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-xs font-bold uppercase tracking-widest text-gray-500">Active Profile</h2>
+                <button onclick="createNewProfile()" class="text-emerald-500 hover:text-emerald-400 text-xs font-bold uppercase transition-colors">+ New Dino</button>
+            </div>
+            
+            <div class="flex flex-col md:flex-row gap-6">
+                <div class="w-full md:w-32 h-32 bg-black/50 rounded-xl border border-gray-700 overflow-hidden flex items-center justify-center shrink-0 relative group">
+                    <img id="dino-image" src="" alt="Dino Preview" class="dino-preview-img w-full h-full object-contain p-2 hidden" onerror="imageLoadError()">
+                    <div id="image-placeholder" class="text-gray-600 text-[10px] text-center p-2 uppercase font-bold">
+                        <svg class="w-8 h-8 mx-auto mb-1 opacity-20" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>
+                        No Image
+                    </div>
+                </div>
+
+                <div class="flex-1 flex flex-col gap-4">
+                    <div class="flex gap-2">
+                        <select id="profile-select" onchange="switchProfile()" class="flex-1 rounded-lg p-2 text-emerald-400 outline-none">
+                        </select>
+                        <button onclick="deleteCurrentProfile()" class="p-2 bg-red-900/30 text-red-500 rounded-lg hover:bg-red-900/50" title="Delete Profile">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16"><path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/><path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/></svg>
+                        </button>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-[10px] uppercase font-bold text-gray-500 mb-1 ml-1">Species</label>
+                            <select id="dino-species" onchange="updateSpecies()" class="w-full rounded-lg p-2 text-sm text-white outline-none">
+                                <option value="" disabled>Select Species...</option>
+                                <optgroup label="Carnivores">
+                                    <option value="Ceratosaurus">Ceratosaurus</option>
+                                    <option value="Deinosuchus">Deinosuchus</option>
+                                    <option value="Dilophosaurus">Dilophosaurus</option>
+                                    <option value="Herrerasaurus">Herrerasaurus</option>
+                                    <option value="Omniraptor">Omniraptor</option>
+                                    <option value="Pteranodon">Pteranodon</option>
+                                    <option value="Troodon">Troodon</option>
+                                    <option value="Tyrannosaurus">Tyrannosaurus Rex</option>
+                                </optgroup>
+                                <optgroup label="Omnivores">
+                                    <option value="Beipiaosaurus">Beipiaosaurus</option>
+                                    <option value="Gallimimus">Gallimimus</option>
+                                </optgroup>
+                                <optgroup label="Herbivores">
+                                    <option value="Diabloceratops">Diabloceratops</option>
+                                    <option value="Dryosaurus">Dryosaurus</option>
+                                    <option value="Hypsilophodon">Hypsilophodon</option>
+                                    <option value="Pachycephalosaurus">Pachycephalosaurus</option>
+                                    <option value="Stegosaurus">Stegosaurus</option>
+                                    <option value="Tenontosaurus">Tenontosaurus</option>
+                                    <option value="Triceratops">Triceratops</option>
+                                </optgroup>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] uppercase font-bold text-gray-500 mb-1 ml-1">Current Status</label>
+                            <select id="life-status" onchange="updateProgress()" class="w-full rounded-lg p-2 text-sm text-white outline-none">
+                                <option value="Alive">🟢 Alive</option>
+                                <option value="Dead">💀 Dead</option>
+                                <option value="Stored">📦 Stored</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-4">
+                <label class="block text-[10px] uppercase font-bold text-gray-500 mb-1 ml-1">Server Name</label>
+                <input type="text" id="server-name" placeholder="Official NA 1..." oninput="updateProgress()" class="w-full rounded-lg p-2 text-sm text-white outline-none">
+            </div>
+        </div>
+
+        <div class="glass-panel rounded-2xl p-6 mb-6">
+            <h2 class="text-xs font-bold uppercase tracking-widest text-gray-500 mb-4 text-center">Spawn Configuration</h2>
+            <div class="flex p-1 bg-black/40 rounded-xl border border-gray-700/50">
+                <button onclick="setSpawn('spawned')" id="btn-spawned" class="flex-1 py-2 text-sm font-bold rounded-lg transition-all duration-200">FRESH SPAWN</button>
+                <button onclick="setSpawn('hatched')" id="btn-hatched" class="flex-1 py-2 text-sm font-bold rounded-lg transition-all duration-200">HATCHED FROM EGG</button>
+            </div>
+        </div>
+
+        <div class="glass-panel rounded-2xl p-6 mb-6">
+            <div class="flex justify-between items-end mb-2">
+                <span class="text-sm font-semibold uppercase tracking-wider text-gray-400">Run Progress</span>
+                <span id="counter" class="text-2xl font-mono text-emerald-400">0/5</span>
+            </div>
+            <div class="w-full bg-gray-800 rounded-full h-4 overflow-hidden border border-gray-700">
+                <div id="progress-bar" class="h-full bg-emerald-500 transition-all duration-500 ease-out w-0 progress-glow"></div>
+            </div>
+            <p id="status-msg" class="mt-4 text-center text-sm font-medium italic text-gray-500">Select objectives to begin...</p>
+        </div>
+
+        <div class="glass-panel rounded-2xl overflow-hidden mb-6">
+            <div id="checklist-container" class="divide-y divide-gray-700/50">
+                <div id="item-sanctuary"></div>
+                
+                <div id="hatched-hidden-group" class="divide-y divide-gray-700/50">
+                    <div id="item-diet"></div>
+                    <div id="item-infertility"></div>
+                    <div id="item-spasms"></div>
+                    
+                    <div class="p-5 bg-white/5">
+                        <div class="flex items-start">
+                            <div class="pt-1">
+                                <input type="checkbox" id="migration-check" class="checkbox-custom rounded border-gray-600 bg-gray-700 pointer-events-none opacity-50">
+                            </div>
+                            <div class="ml-4 flex-1">
+                                <span class="block text-lg font-medium text-gray-200">Migration Goals</span>
+                                <span class="block text-sm text-gray-500 mb-3 tracking-tight">Visit 2 Migration Zones.</span>
+                                <div class="bg-black/30 p-3 rounded-lg border border-gray-700 max-w-[160px]">
+                                    <label class="block text-[10px] uppercase font-bold text-gray-500 mb-1">Zones Visited</label>
+                                    <div class="flex items-center justify-between">
+                                        <input type="number" id="mz-count" value="0" min="0" max="10" onchange="updateProgress()" class="bg-transparent text-emerald-400 font-mono text-xl w-12 outline-none">
+                                        <span class="text-gray-600 font-bold">/ 2</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-5 bg-white/5">
+                        <div class="flex items-start">
+                            <div class="pt-1">
+                                <input type="checkbox" id="patrol-check" class="checkbox-custom rounded border-gray-600 bg-gray-700 pointer-events-none opacity-50">
+                            </div>
+                            <div class="ml-4 flex-1">
+                                <span class="block text-lg font-medium text-gray-200">Patrol Goals</span>
+                                <span class="block text-sm text-gray-500 mb-3 tracking-tight">Visit 4 Patrol Zones.</span>
+                                <div class="bg-black/30 p-3 rounded-lg border border-gray-700 max-w-[160px]">
+                                    <label class="block text-[10px] uppercase font-bold text-gray-500 mb-1">Zones Visited</label>
+                                    <div class="flex items-center justify-between">
+                                        <input type="number" id="pz-count" value="0" min="0" max="10" onchange="updateProgress()" class="bg-transparent text-emerald-400 font-mono text-xl w-12 outline-none">
+                                        <span class="text-gray-600 font-bold">/ 4</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="item-nest"></div>
+                    <div id="item-mass"></div>
+                </div>
+            </div>
+        </div>
+
+        <footer class="text-center text-xs text-gray-600 space-y-4 mb-6">
+            <div class="flex flex-col items-center gap-4">
+                <button onclick="resetCurrentProfile()" class="text-red-900 hover:text-red-700 transition-colors uppercase tracking-widest font-bold text-[10px]">Reset Current Profile</button>
+                <p>Profiles are saved locally to this browser.</p>
+            </div>
+        </footer>
+
+        <div class="border-t border-gray-800 pt-6 pb-12 px-4 text-center">
+            <p class="text-[10px] text-gray-500 leading-relaxed max-w-sm mx-auto uppercase tracking-tighter">
+                Disclaimer: This tool provides unconfirmed data. We are in no way affiliated with Afterthought LLC or The Isle developers. Data accuracy is not guaranteed.
+            </p>
+        </div>
+    </div>
+
+    <script>
+        /**
+         * IMAGE DATABASE
+         * Paste your direct image URLs between the quotes below.
+         * Recommended: Use stable image hosting like Imgur or Discord (if link is permanent).
+         */
+        const dinoImages = {
+            // Carnivores
+            "Ceratosaurus": "https://static.wikia.nocookie.net/the-isle-world/images/5/5a/CeratosaurusEvrima.png",
+            "Deinosuchus": "https://static.wikia.nocookie.net/the-isle-world/images/1/1d/Deinosuchus_Icon.png",
+            "Dilophosaurus": "https://static.wikia.nocookie.net/the-isle-world/images/b/b3/Dilo_Evrima.png",
+            "Herrerasaurus": "https://static.wikia.nocookie.net/the-isle-world/images/b/b7/Herrerasaurus_Icon.png",
+            "Omniraptor": "https://static.wikia.nocookie.net/the-isle-world/images/1/1a/Omniraptor_Icon.png",
+            "Pteranodon": "https://static.wikia.nocookie.net/the-isle-world/images/c/c5/Pteranodon_Icon.png",
+            "Troodon": "https://static.wikia.nocookie.net/the-isle-world/images/5/5d/Troodon_Icon.png",
+            "Tyrannosaurus": "https://static.wikia.nocookie.net/the-isle-world/images/0/06/Tyrannosaurus_Rex_Icon.png",
+            
+            // Omnivores
+            "Beipiaosaurus": "https://static.wikia.nocookie.net/the-isle-world/images/1/14/Beipiaosaurus_Icon.png",
+            "Gallimimus": "https://static.wikia.nocookie.net/the-isle-world/images/c/c3/Gallimimus_Icon.png",
+            
+            // Herbivores
+            "Diabloceratops": "https://static.wikia.nocookie.net/the-isle-world/images/4/4d/Diabloceratops_Icon.png",
+            "Dryosaurus": "https://static.wikia.nocookie.net/the-isle-world/images/5/53/Dryosaurus_Icon.png",
+            "Hypsilophodon": "https://static.wikia.nocookie.net/the-isle-world/images/1/10/Hypsi_Icon.png",
+            "Pachycephalosaurus": "https://static.wikia.nocookie.net/the-isle-world/images/3/3b/Pachy_Icon.png",
+            "Stegosaurus": "https://static.wikia.nocookie.net/the-isle-world/images/7/77/Stegosaurus_Icon.png",
+            "Tenontosaurus": "https://static.wikia.nocookie.net/the-isle-world/images/c/cd/Tenontosaurus_Icon.png",
+            "Triceratops": "https://static.wikia.nocookie.net/the-isle-world/images/4/4e/Triceratops_Icon.png"
+        };
+
+        const standardObjectives = [
+            { id: 'sanctuary', text: 'Visit Sanctuary', sub: 'Stay for ~10s to register.' },
+            { id: 'diet', text: 'Achieve Perfect Diet', sub: 'Balance all nutrients at least once.' },
+            { id: 'infertility', text: 'Avoid Infertility', sub: 'Keep nutrients active.' },
+            { id: 'spasms', text: 'Avoid Muscle Spasms', sub: 'Do not eat your own species.' },
+            { id: 'nest', text: 'Raise Hatchling to 50%', sub: 'Nest and nurture a hatchling.' },
+            { id: 'mass', text: 'Visit Mass Migration Zone', sub: 'Reach the primary migration point.' }
+        ];
+
+        let profiles = JSON.parse(localStorage.getItem('isle_elder_profiles_v7')) || {
+            'default': { name: 'Pachycephalosaurus', spawnType: 'spawned', mz: 0, pz: 0, server: '', status: 'Alive', checks: {} }
+        };
+        let activeId = localStorage.getItem('isle_elder_active_id_v7') || 'default';
+
+        function init() {
+            if (!localStorage.getItem('privacy_accepted')) {
+                document.getElementById('privacy-modal').style.display = 'flex';
+            }
+            renderProfileList();
+            renderChecklist();
+            loadProfile(activeId);
+        }
+
+        function acceptPrivacy() {
+            localStorage.setItem('privacy_accepted', 'true');
+            document.getElementById('privacy-modal').style.display = 'none';
+        }
+
+        function imageLoadError() {
+            const imgEl = document.getElementById('dino-image');
+            const placeholder = document.getElementById('image-placeholder');
+            imgEl.classList.add('hidden');
+            placeholder.classList.remove('hidden');
+        }
+
+        function updateDinoImage(species) {
+            const imgEl = document.getElementById('dino-image');
+            const placeholder = document.getElementById('image-placeholder');
+            const url = dinoImages[species];
+            
+            if (url && url.trim() !== "") {
+                imgEl.src = url;
+                imgEl.classList.remove('hidden');
+                placeholder.classList.add('hidden');
+            } else {
+                imageLoadError();
+            }
+        }
+
+        function renderProfileList() {
+            const select = document.getElementById('profile-select');
+            select.innerHTML = Object.keys(profiles).map(id => {
+                const p = profiles[id];
+                const statusEmoji = p.status === 'Dead' ? '💀' : p.status === 'Stored' ? '📦' : '🦖';
+                return `<option value="${id}" ${id === activeId ? 'selected' : ''}>${statusEmoji} ${p.name}</option>`;
+            }).join('');
+        }
+
+        function renderChecklist() {
+            standardObjectives.forEach(obj => {
+                const el = document.getElementById(`item-${obj.id}`);
+                if (!el) return;
+                el.innerHTML = `
+                    <label class="flex items-start p-5 hover:bg-white/5 transition-colors cursor-pointer group">
+                        <div class="pt-1">
+                            <input type="checkbox" id="${obj.id}" class="checkbox-custom rounded border-gray-600 bg-gray-700" onchange="updateProgress()">
+                        </div>
+                        <div class="ml-4">
+                            <span class="block text-lg font-medium text-gray-200 group-hover:text-emerald-400 transition-colors">${obj.text}</span>
+                            <span class="block text-sm text-gray-500 leading-relaxed">${obj.sub}</span>
+                        </div>
+                    </label>
+                `;
+            });
+        }
+
+        function switchProfile() {
+            saveCurrentState();
+            activeId = document.getElementById('profile-select').value;
+            localStorage.setItem('isle_elder_active_id_v7', activeId);
+            loadProfile(activeId);
+        }
+
+        function createNewProfile() {
+            const speciesSelect = document.getElementById('dino-species');
+            const species = speciesSelect.value || "Pachycephalosaurus";
+            const id = 'p_' + Date.now();
+            profiles[id] = { name: species, spawnType: 'spawned', mz: 0, pz: 0, server: '', status: 'Alive', checks: {} };
+            activeId = id;
+            saveAll();
+            renderProfileList();
+            loadProfile(id);
+        }
+
+        function updateSpecies() {
+            const species = document.getElementById('dino-species').value;
+            profiles[activeId].name = species;
+            updateDinoImage(species);
+            saveAll();
+            renderProfileList();
+        }
+
+        function deleteCurrentProfile() {
+            if (Object.keys(profiles).length <= 1) return alert("Must have one profile.");
+            if (confirm(`Delete "${profiles[activeId].name}"?`)) {
+                delete profiles[activeId];
+                activeId = Object.keys(profiles)[0];
+                saveAll();
+                renderProfileList();
+                loadProfile(activeId);
+            }
+        }
+
+        function setSpawn(type) {
+            profiles[activeId].spawnType = type;
+            const spawnedBtn = document.getElementById('btn-spawned');
+            const hatchedBtn = document.getElementById('btn-hatched');
+            const hiddenGroup = document.getElementById('hatched-hidden-group');
+            
+            if (type === 'hatched') {
+                hiddenGroup.classList.add('hidden-objective');
+                hatchedBtn.className = "flex-1 py-2 text-sm font-bold rounded-lg bg-emerald-600 text-white shadow-lg";
+                spawnedBtn.className = "flex-1 py-2 text-sm font-bold rounded-lg text-gray-500 hover:text-gray-300";
+            } else {
+                hiddenGroup.classList.remove('hidden-objective');
+                spawnedBtn.className = "flex-1 py-2 text-sm font-bold rounded-lg bg-emerald-600 text-white shadow-lg";
+                hatchedBtn.className = "flex-1 py-2 text-sm font-bold rounded-lg text-gray-500 hover:text-gray-300";
+            }
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const isHatched = profiles[activeId].spawnType === 'hatched';
+            const mz = parseInt(document.getElementById('mz-count').value) || 0;
+            const pz = parseInt(document.getElementById('pz-count').value) || 0;
+            
+            document.getElementById('migration-check').checked = (mz >= 2);
+            document.getElementById('patrol-check').checked = (pz >= 4);
+
+            let checkedCount = 0;
+            const statusMsg = document.getElementById('status-msg');
+
+            if (isHatched) {
+                const sancChecked = document.getElementById('sanctuary').checked;
+                checkedCount = sancChecked ? 5 : 0;
+                document.getElementById('counter').innerText = sancChecked ? "1/1" : "0/1";
+                document.getElementById('progress-bar').style.width = sancChecked ? "100%" : "0%";
+                statusMsg.innerText = sancChecked ? "PRIME ELDER ELIGIBLE!" : "Visit Sanctuary to complete lineage requirements.";
+            } else {
+                const checkboxes = document.querySelectorAll('#checklist-container input[type="checkbox"]');
+                checkedCount = Array.from(checkboxes).filter(i => i.checked).length;
+                const percent = Math.min((checkedCount / 5) * 100, 100);
+                document.getElementById('progress-bar').style.width = `${percent}%`;
+                document.getElementById('counter').innerText = `${checkedCount}/5`;
+                statusMsg.innerText = checkedCount >= 5 ? "PRIME ELDER ELIGIBLE!" : `Need ${Math.max(0, 5 - checkedCount)} more objectives.`;
+            }
+            
+            statusMsg.className = checkedCount >= 5 ? "mt-4 text-center text-sm font-bold uppercase tracking-widest text-emerald-400 animate-pulse" : "mt-4 text-center text-sm font-medium italic text-gray-500";
+            saveCurrentState();
+        }
+
+        function loadProfile(id) {
+            const p = profiles[id];
+            document.getElementById('mz-count').value = p.mz || 0;
+            document.getElementById('pz-count').value = p.pz || 0;
+            document.getElementById('server-name').value = p.server || '';
+            document.getElementById('life-status').value = p.status || 'Alive';
+            document.getElementById('dino-species').value = p.name;
+            
+            updateDinoImage(p.name);
+            
+            document.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+                if (cb.id !== 'migration-check' && cb.id !== 'patrol-check') {
+                    cb.checked = p.checks[cb.id] || false;
+                }
+            });
+            setSpawn(p.spawnType || 'spawned');
+        }
+
+        function saveCurrentState() {
+            const p = profiles[activeId];
+            p.mz = document.getElementById('mz-count').value;
+            p.pz = document.getElementById('pz-count').value;
+            p.server = document.getElementById('server-name').value;
+            p.status = document.getElementById('life-status').value;
+            p.name = document.getElementById('dino-species').value;
+            p.checks = {};
+            document.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+                p.checks[cb.id] = cb.checked;
+            });
+            saveAll();
+        }
+
+        function saveAll() {
+            localStorage.setItem('isle_elder_profiles_v7', JSON.stringify(profiles));
+            localStorage.setItem('isle_elder_active_id_v7', activeId);
+        }
+
+        function resetCurrentProfile() {
+            if(confirm("Clear objectives?")) {
+                profiles[activeId].mz = 0;
+                profiles[activeId].pz = 0;
+                profiles[activeId].checks = {};
+                profiles[activeId].spawnType = 'spawned';
+                loadProfile(activeId);
+            }
+        }
+
+        window.onload = init;
+    </script>
+</body>
+</html>
