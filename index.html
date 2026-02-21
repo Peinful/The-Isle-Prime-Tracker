@@ -5,321 +5,367 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Prime Elder Tracker</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Importing Ancient/Stone style fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Playfair+Display:ital,wght@0,400;0,700;1,900&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --stone-bg: rgba(15, 18, 22, 0.95);
+            --emerald-glow: #10b981;
+            --border-glow: rgba(16, 185, 129, 0.2);
+        }
+
         body {
-            background-color: #0a0c0f;
+            background-color: #06080a;
             color: #d1d5db;
-            background-image: radial-gradient(circle at center, #1a202c 0%, #0a0c0f 100%);
+            background-image: 
+                radial-gradient(circle at 50% 0%, rgba(16, 185, 129, 0.05) 0%, transparent 50%),
+                url('https://www.transparenttextures.com/patterns/dark-matter.png');
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
             font-family: 'Playfair Display', serif;
         }
         
         h1, h2, .dino-title {
             font-family: 'Cinzel', serif;
-            letter-spacing: 0.15em;
+            letter-spacing: 0.1em;
         }
 
-        .main-content {
-            flex: 1;
-        }
         .glass-panel {
-            background: rgba(31, 41, 55, 0.7);
-            backdrop-filter: blur(10px);
+            background: var(--stone-bg);
+            backdrop-filter: blur(12px);
             border: 1px solid rgba(75, 85, 99, 0.3);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
-        .checkbox-custom {
-            width: 20px;
-            height: 20px;
+
+        /* --- Custom Stone Dropdown Styling --- */
+        .custom-dropdown {
+            position: relative;
+            width: 100%;
+            user-select: none;
+        }
+
+        .dropdown-trigger {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            color: #10b981;
+            padding: 0.75rem 1rem;
+            border-radius: 0.75rem;
             cursor: pointer;
-            accent-color: #10b981;
-        }
-        .progress-glow {
-            box-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
-        }
-        
-        /* Styled Dropdowns */
-        select {
-            background: rgba(0, 0, 0, 0.6) !important;
-            border: 1px solid rgba(16, 185, 129, 0.3) !important;
-            color: #10b981 !important;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             font-family: 'Cinzel', serif;
-            appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%2310b981' viewBox='0 0 24 24'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E") !important;
-            background-repeat: no-repeat !important;
-            background-position: right 0.5rem center !important;
-            background-size: 1.5em 1.5em !important;
-            padding-right: 2.5rem !important;
-            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 700;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        
-        /* Styled Text Inputs */
+
+        .dropdown-trigger:hover {
+            border-color: var(--emerald-glow);
+            background: rgba(16, 185, 129, 0.05);
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.1);
+        }
+
+        .dropdown-options {
+            position: absolute;
+            top: calc(100% + 5px);
+            left: 0;
+            right: 0;
+            background: #111418;
+            border: 1px solid #10b98144;
+            border-radius: 0.75rem;
+            z-index: 100;
+            max-height: 250px;
+            overflow-y: auto;
+            display: none;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.8);
+        }
+
+        .dropdown-options.show {
+            display: block;
+            animation: slideIn 0.2s ease-out;
+        }
+
+        .option-group-label {
+            padding: 0.5rem 1rem;
+            font-size: 0.65rem;
+            color: #4b5563;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            background: rgba(0,0,0,0.2);
+            font-weight: 900;
+        }
+
+        .option-item {
+            padding: 0.6rem 1rem;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: #9ca3af;
+        }
+
+        .option-item:hover {
+            background: rgba(16, 185, 129, 0.1);
+            color: #10b981;
+            padding-left: 1.25rem;
+        }
+
+        /* --- Buttons & Inputs --- */
+        .num-btn {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(75, 85, 99, 0.3);
+            color: #6b7280;
+            width: 38px;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 0.5rem;
+            font-family: 'Cinzel', serif;
+            font-weight: 900;
+            transition: all 0.3s;
+        }
+
+        .num-btn.active {
+            background: rgba(16, 185, 129, 0.15);
+            border-color: #10b981;
+            color: #10b981;
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.2);
+            transform: translateY(-2px);
+        }
+
         input[type="text"] {
-            background: rgba(0, 0, 0, 0.6) !important;
-            border: 1px solid rgba(16, 185, 129, 0.3) !important;
+            background: rgba(0, 0, 0, 0.4) !important;
+            border: 1px solid rgba(16, 185, 129, 0.2) !important;
             color: #10b981 !important;
             font-family: 'Cinzel', serif;
             outline: none;
-            transition: border-color 0.2s;
+            padding: 0.75rem 1rem;
+            border-radius: 0.75rem;
         }
 
-        input[type="text"]:focus {
-            border-color: #10b981 !important;
+        .checkbox-custom {
+            appearance: none;
+            width: 22px;
+            height: 22px;
+            border: 2px solid rgba(16, 185, 129, 0.3);
+            border-radius: 6px;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s;
         }
 
-        /* Number Button Group Styles */
-        .num-btn {
-            background: rgba(0, 0, 0, 0.4);
-            border: 1px solid rgba(75, 85, 99, 0.4);
-            color: #4b5563;
-            transition: all 0.2s ease;
-            font-family: 'Cinzel', serif;
-            font-weight: bold;
-        }
-        .num-btn.active {
-            background: rgba(16, 185, 129, 0.2);
-            border-color: #10b981;
-            color: #10b981;
-            box-shadow: 0 0 10px rgba(16, 185, 129, 0.2);
+        .checkbox-custom:checked {
+            background: var(--emerald-glow);
+            border-color: var(--emerald-glow);
+            box-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
         }
 
-        .hidden-objective {
-            display: none !important;
+        .checkbox-custom:checked::after {
+            content: '✓';
+            position: absolute;
+            color: black;
+            font-size: 14px;
+            font-weight: 900;
+            left: 4px;
+            top: -1px;
         }
-        .isle-logo {
-            filter: drop-shadow(0 0 12px rgba(16, 185, 129, 0.4));
-            max-width: 80px;
-            height: auto;
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
+
         #privacy-modal, #rename-modal {
             display: none;
             position: fixed;
             inset: 0;
-            background: rgba(0,0,0,0.85);
-            z-index: 50;
+            background: rgba(0,0,0,0.9);
+            z-index: 1000;
             align-items: center;
             justify-content: center;
-            padding: 20px;
+            backdrop-filter: blur(8px);
         }
-        ::-webkit-scrollbar {
-            width: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #0a0c0f;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #1f2937;
-            border-radius: 10px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #10b981;
-        }
-        .social-icon {
-            transition: all 0.2s ease;
-            color: #9ca3af;
-        }
-        .social-icon:hover {
-            color: #10b981;
-            transform: translateY(-2px);
-        }
-        .dino-avatar {
-            background: linear-gradient(135deg, #064e3b 0%, #022c22 100%);
-            border: 2px solid #10b98144;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-family: 'Cinzel', serif;
-            text-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+
+        .isle-logo {
+            filter: drop-shadow(0 0 15px rgba(16, 185, 129, 0.3));
+            object-fit: contain;
+            width: 80px;
+            height: 80px;
         }
     </style>
 </head>
-<body class="p-2 md:p-6 lg:p-8">
+<body class="p-4 md:p-8 lg:p-12">
 
     <!-- Privacy Modal -->
     <div id="privacy-modal">
-        <div class="glass-panel max-w-md w-full rounded-2xl p-8 border-emerald-500/30">
-            <h2 class="text-xl font-bold text-emerald-500 mb-4">Data & Privacy Notice</h2>
-            <p class="text-sm text-gray-300 mb-4 leading-relaxed">
-                To keep track of your dinosaur's progress, this website saves your profiles to your browser's <strong>Local Storage</strong>.
+        <div class="glass-panel max-w-md w-full rounded-3xl p-8 border-emerald-500/40">
+            <h2 class="text-2xl font-black text-emerald-500 mb-4 dino-title">Data Protocols</h2>
+            <p class="text-sm text-gray-400 mb-6 leading-relaxed">
+                To track your dinosaur's lineage, progress is stored locally in your browser's crystalline memory (Local Storage). No data ever leaves your device.
             </p>
-            <ul class="text-xs text-gray-400 space-y-2 mb-6 list-disc pl-4">
-                <li>No data is sent to a server.</li>
-                <li>No personal information is collected.</li>
-                <li>If you clear your browser cache, your progress will be lost.</li>
-            </ul>
-            <button onclick="acceptPrivacy()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl transition-all dino-title">
-                I Understand
+            <button onclick="acceptPrivacy()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-black font-black py-4 rounded-xl transition-all dino-title uppercase">
+                Accept Path
             </button>
         </div>
     </div>
 
     <!-- Rename Modal -->
     <div id="rename-modal">
-        <div class="glass-panel max-w-sm w-full rounded-2xl p-6 border-emerald-500/30">
-            <h2 class="text-[10px] font-bold uppercase tracking-widest text-emerald-500 mb-4">Edit Dino Nickname</h2>
-            <input type="text" id="modal-nickname-input" placeholder="e.g. Alpha Male, Solo Run..." class="w-full rounded-lg p-3 text-sm text-emerald-400 font-bold outline-none border border-emerald-500/40 mb-6 bg-black/60">
-            <div class="flex gap-3">
-                <button onclick="closeRenameModal()" class="flex-1 text-gray-400 hover:text-white text-xs font-bold uppercase py-2 dino-title">Cancel</button>
-                <button onclick="saveNicknameFromModal()" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold uppercase py-2 rounded-lg transition-all dino-title">Save Name</button>
+        <div class="glass-panel max-w-sm w-full rounded-3xl p-8 border-emerald-500/40">
+            <h2 class="text-xs font-black uppercase tracking-[0.3em] text-emerald-500 mb-6">Modify Nickname</h2>
+            <input type="text" id="modal-nickname-input" placeholder="ALPHA MALE..." class="w-full mb-8">
+            <div class="flex gap-4">
+                <button onclick="closeRenameModal()" class="flex-1 text-gray-500 hover:text-white font-bold dino-title uppercase text-xs">Cancel</button>
+                <button onclick="saveNicknameFromModal()" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-black font-black py-3 rounded-xl transition-all dino-title uppercase text-xs">Save</button>
             </div>
         </div>
     </div>
 
-    <div class="max-w-6xl mx-auto main-content">
-        <header class="flex flex-row items-center justify-between mb-8 gap-4">
-            <div class="flex items-center gap-6">
-                <img src="https://www.theisle-game.com/templates/yootheme/cache/8f/The-Isle-Skull-copy-8f195f17.webp" alt="The Isle Skull Logo" class="isle-logo">
-                <div class="hidden md:block h-12 w-px bg-emerald-500/30"></div>
+    <div class="max-w-6xl mx-auto">
+        <header class="flex flex-col md:flex-row items-center justify-between mb-12 gap-8">
+            <div class="flex items-center gap-8">
+                <img src="https://www.theisle-game.com/templates/yootheme/cache/8f/The-Isle-Skull-copy-8f195f17.webp" alt="Logo" class="isle-logo">
                 <div>
-                    <h1 class="text-xl md:text-3xl font-black text-emerald-500 uppercase leading-tight">Prime Elder Tracker</h1>
-                    <p class="text-gray-500 text-[10px] uppercase font-bold tracking-[0.2em] opacity-80">Reach all goals before 75% growth</p>
+                    <h1 class="text-4xl font-black text-emerald-500 uppercase tracking-tighter">Prime Elder</h1>
+                    <p class="text-gray-500 text-xs font-black tracking-[0.4em] uppercase opacity-60">Trial of the Ancient Ones</p>
                 </div>
             </div>
             
-            <div class="flex items-center gap-3">
-                <div class="text-right hidden sm:block">
-                    <span id="counter" class="text-2xl font-mono text-emerald-400">0/5</span>
-                    <p class="text-[10px] uppercase font-bold text-gray-500 tracking-widest">Run Progress</p>
-                </div>
-                <div id="dino-icon-placeholder" class="w-16 h-16 md:w-20 md:h-20 dino-avatar rounded-xl overflow-hidden shrink-0">
-                    <span id="dino-letter" class="text-3xl md:text-4xl font-bold text-emerald-400">?</span>
+            <div class="flex items-center gap-6">
+                <div class="text-right">
+                    <span id="counter" class="text-4xl font-black text-emerald-400 dino-title">0/5</span>
+                    <p class="text-[9px] uppercase font-black text-gray-600 tracking-[0.3em]">Core Objectives Met</p>
                 </div>
             </div>
         </header>
 
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-            <!-- Left Column -->
-            <div class="lg:col-span-4 space-y-4">
-                <div class="glass-panel rounded-2xl p-4">
-                    <div class="flex items-center justify-between mb-3">
-                        <h2 class="text-[10px] font-bold uppercase tracking-widest text-gray-500">Active Profile</h2>
-                        <button onclick="createNewProfile()" class="text-emerald-500 hover:text-emerald-400 text-[10px] font-bold uppercase transition-colors tracking-widest">+ New Dino</button>
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <!-- Left Controls -->
+            <div class="lg:col-span-4 space-y-6">
+                <!-- Profile Section -->
+                <div class="glass-panel rounded-3xl p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <label class="text-[10px] font-black uppercase tracking-widest text-gray-600">Active Profile</label>
+                        <button onclick="createNewProfile()" class="text-emerald-500 hover:text-emerald-400 text-[10px] font-black uppercase tracking-widest">+ New</button>
                     </div>
-                    
-                    <div class="flex gap-2 mb-4">
-                        <select id="profile-select" onchange="switchProfile()" class="flex-1 rounded-lg p-2 text-sm outline-none font-bold">
-                        </select>
-                        <button onclick="openRenameModal()" class="p-2 bg-emerald-900/20 text-emerald-500 rounded-lg hover:bg-emerald-900/40 transition-colors" title="Rename Dino">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"/></svg>
-                        </button>
-                        <button onclick="deleteCurrentProfile()" class="p-2 bg-red-900/30 text-red-500 rounded-lg hover:bg-red-900/50 transition-colors" title="Delete Profile">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/><path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/></svg>
+
+                    <div class="custom-dropdown mb-6" id="profile-dropdown">
+                        <div class="dropdown-trigger" onclick="toggleDropdown('profile-options')">
+                            <span id="selected-profile-label">Select Profile</span>
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        </div>
+                        <div class="dropdown-options" id="profile-options"></div>
+                    </div>
+
+                    <div class="flex gap-2 mb-8">
+                        <button onclick="openRenameModal()" class="flex-1 py-3 bg-emerald-900/10 text-emerald-500 rounded-xl border border-emerald-500/20 hover:bg-emerald-900/30 transition-all font-black uppercase text-[10px] tracking-widest">Rename</button>
+                        <button onclick="deleteCurrentProfile()" class="px-4 bg-red-900/10 text-red-500 rounded-xl border border-red-500/20 hover:bg-red-900/30 transition-all">
+                            <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/><path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118z"/></svg>
                         </button>
                     </div>
 
-                    <div class="space-y-3">
-                        <div>
-                            <label class="block text-[10px] uppercase font-bold text-gray-500 mb-1 ml-1 tracking-widest">Species</label>
-                            <select id="dino-species" onchange="updateSpecies()" class="w-full rounded-lg p-2 text-sm outline-none">
-                                <option value="" disabled>Select Species...</option>
-                                <optgroup label="Carnivores">
-                                    <option value="Ceratosaurus">Ceratosaurus</option>
-                                    <option value="Deinosuchus">Deinosuchus</option>
-                                    <option value="Dilophosaurus">Dilophosaurus</option>
-                                    <option value="Herrerasaurus">Herrerasaurus</option>
-                                    <option value="Omniraptor">Omniraptor</option>
-                                    <option value="Pteranodon">Pteranodon</option>
-                                    <option value="Troodon">Troodon</option>
-                                    <option value="Tyrannosaurus">Tyrannosaurus Rex</option>
-                                </optgroup>
-                                <optgroup label="Omnivores">
-                                    <option value="Beipiaosaurus">Beipiaosaurus</option>
-                                    <option value="Gallimimus">Gallimimus</option>
-                                </optgroup>
-                                <optgroup label="Herbivores">
-                                    <option value="Diabloceratops">Diabloceratops</option>
-                                    <option value="Dryosaurus">Dryosaurus</option>
-                                    <option value="Hypsilophodon">Hypsilophodon</option>
-                                    <option value="Pachycephalosaurus">Pachycephalosaurus</option>
-                                    <option value="Stegosaurus">Stegosaurus</option>
-                                    <option value="Tenontosaurus">Tenontosaurus</option>
-                                    <option value="Triceratops">Triceratops</option>
-                                </optgroup>
-                            </select>
+                    <div class="space-y-4">
+                        <div class="custom-dropdown" id="species-dropdown">
+                            <label class="block text-[9px] font-black uppercase tracking-[0.3em] text-gray-600 mb-2 ml-1">Species Selection</label>
+                            <div class="dropdown-trigger" onclick="toggleDropdown('species-options')">
+                                <span id="selected-species-label">Pachycephalosaurus</span>
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                            </div>
+                            <div class="dropdown-options" id="species-options">
+                                <div class="option-group-label">Carnivores</div>
+                                <div class="option-item" onclick="selectSpecies('Ceratosaurus')">Ceratosaurus</div>
+                                <div class="option-item" onclick="selectSpecies('Deinosuchus')">Deinosuchus</div>
+                                <div class="option-item" onclick="selectSpecies('Dilophosaurus')">Dilophosaurus</div>
+                                <div class="option-item" onclick="selectSpecies('Herrerasaurus')">Herrerasaurus</div>
+                                <div class="option-item" onclick="selectSpecies('Omniraptor')">Omniraptor</div>
+                                <div class="option-item" onclick="selectSpecies('Tyrannosaurus')">T-Rex</div>
+                                <div class="option-group-label">Herbivores</div>
+                                <div class="option-item" onclick="selectSpecies('Diabloceratops')">Diabloceratops</div>
+                                <div class="option-item" onclick="selectSpecies('Stegosaurus')">Stegosaurus</div>
+                                <div class="option-item" onclick="selectSpecies('Tenontosaurus')">Tenontosaurus</div>
+                                <div class="option-item" onclick="selectSpecies('Triceratops')">Triceratops</div>
+                                <div class="option-group-label">Omnivores</div>
+                                <div class="option-item" onclick="selectSpecies('Beipiaosaurus')">Beipiaosaurus</div>
+                                <div class="option-item" onclick="selectSpecies('Gallimimus')">Gallimimus</div>
+                            </div>
                         </div>
-                        <div>
-                            <label class="block text-[10px] uppercase font-bold text-gray-500 mb-1 ml-1 tracking-widest">Status & Server</label>
-                            <div class="flex gap-2">
-                                <select id="life-status" onchange="updateProgress()" class="w-1/3 rounded-lg p-2 text-sm outline-none">
-                                    <option value="Alive">Alive</option>
-                                    <option value="Dead">Dead</option>
-                                    <option value="Stored">Stored</option>
-                                </select>
-                                <input type="text" id="server-name" placeholder="SERVER NAME..." oninput="updateProgress()" class="w-2/3 rounded-lg p-2 text-sm outline-none uppercase font-bold tracking-widest">
+
+                        <div class="grid grid-cols-2 gap-3">
+                            <div class="custom-dropdown">
+                                <label class="block text-[9px] font-black uppercase tracking-[0.3em] text-gray-600 mb-2 ml-1">Status</label>
+                                <div class="dropdown-trigger" onclick="toggleDropdown('status-options')">
+                                    <span id="selected-status-label">Alive</span>
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                </div>
+                                <div class="dropdown-options" id="status-options">
+                                    <div class="option-item" onclick="selectStatus('Alive')">Alive</div>
+                                    <div class="option-item" onclick="selectStatus('Dead')">Dead</div>
+                                    <div class="option-item" onclick="selectStatus('Stored')">Stored</div>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-[9px] font-black uppercase tracking-[0.3em] text-gray-600 mb-2 ml-1">Server</label>
+                                <input type="text" id="server-name" placeholder="Server ID..." class="w-full text-xs" oninput="saveCurrentState()">
                             </div>
                         </div>
                     </div>
-                    
-                    <button id="manual-save-btn" onclick="manualSave()" class="w-full mt-4 flex items-center justify-center gap-2 bg-emerald-900/40 hover:bg-emerald-800/60 text-emerald-400 text-[10px] font-bold uppercase tracking-widest py-2.5 rounded-xl border border-emerald-500/20 transition-all duration-300 dino-title">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16"><path d="M11 2H9v3h2z"/><path d="M1.5 0h11.586a1.5 1.5 0 0 1 1.06.44l1.415 1.414A1.5 1.5 0 0 1 16 2.914V14.5a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 0 14.5v-13A1.5 1.5 0 0 1 1.5 0M1 1.5v13a.5.5 0 0 0 .5.5H2v-4.5A1.5 1.5 0 0 1 3.5 9h9a1.5 1.5 0 0 1 1.5 1.5V15h.5a.5.5 0 0 0 .5-.5V2.914a.5.5 0 0 0-.146-.353l-1.415-1.415A.5.5 0 0 0 13.086 1H13v4.5A1.5 1.5 0 0 1 11.5 7h-7A1.5 1.5 0 0 1 3 5.5V1H1.5a.5.5 0 0 0-.5.5m3 4.5h7a.5.5 0 0 0 .5-.5V1H4v4.5a.5.5 0 0 0 .5.5M3 15h10v-4.5a.5.5 0 0 0-.5-.5h-9a.5.5 0 0 0-.5.5z"/></svg>
-                        <span>Save to Browser</span>
-                    </button>
                 </div>
 
-                <div class="glass-panel rounded-2xl p-4">
-                    <h2 class="text-[10px] font-bold uppercase tracking-widest text-gray-500 mb-3 text-center">Spawn Type</h2>
-                    <div class="flex p-1 bg-black/40 rounded-xl border border-gray-700/50">
-                        <button onclick="setSpawn('spawned')" id="btn-spawned" class="flex-1 py-1.5 text-xs font-bold rounded-lg transition-all duration-200 uppercase dino-title">Spawn</button>
-                        <button onclick="setSpawn('hatched')" id="btn-hatched" class="flex-1 py-1.5 text-xs font-bold rounded-lg transition-all duration-200 uppercase dino-title">Hatch</button>
+                <!-- Spawn Toggle -->
+                <div class="glass-panel rounded-3xl p-5">
+                    <label class="block text-[9px] font-black uppercase tracking-[0.3em] text-gray-600 mb-3 text-center">Spawn Type</label>
+                    <div class="flex p-1.5 bg-black/50 rounded-2xl border border-gray-800">
+                        <button onclick="setSpawn('spawned')" id="btn-spawned" class="flex-1 py-3 text-[10px] font-black rounded-xl transition-all uppercase tracking-widest">Normal</button>
+                        <button onclick="setSpawn('hatched')" id="btn-hatched" class="flex-1 py-3 text-[10px] font-black rounded-xl transition-all uppercase tracking-widest">Egg (Hatchling)</button>
                     </div>
                 </div>
 
-                <div class="glass-panel rounded-2xl p-4">
-                    <div class="w-full bg-gray-800 rounded-full h-3 overflow-hidden border border-gray-700 mb-2">
-                        <div id="progress-bar" class="h-full bg-emerald-500 transition-all duration-500 ease-out w-0 progress-glow"></div>
+                <!-- Progress -->
+                <div class="glass-panel rounded-3xl p-6">
+                    <div class="w-full bg-gray-900 rounded-full h-2 mb-4 overflow-hidden">
+                        <div id="progress-bar" class="h-full bg-emerald-500 transition-all duration-700 w-0" style="box-shadow: 0 0 20px #10b981;"></div>
                     </div>
-                    <p id="status-msg" class="text-center text-[11px] font-bold uppercase tracking-[0.2em] text-gray-500 dino-title">Select objectives...</p>
-                    
-                    <button onclick="resetCurrentProfile()" class="w-full mt-4 text-red-900/60 hover:text-red-500 transition-colors uppercase tracking-[0.3em] font-bold text-[9px] py-1 border border-red-900/20 rounded-lg dino-title">Reset Progress</button>
+                    <p id="status-msg" class="text-center text-[10px] font-black uppercase tracking-[0.3em] text-gray-600">Growth Required</p>
                 </div>
             </div>
 
-            <!-- Right Column -->
+            <!-- Right Objectives -->
             <div class="lg:col-span-8">
-                <div class="glass-panel rounded-2xl overflow-hidden h-full">
-                    <div id="checklist-container" class="divide-y divide-gray-700/50">
+                <div class="glass-panel rounded-[2.5rem] overflow-hidden border-emerald-500/10">
+                    <div id="checklist-container" class="divide-y divide-emerald-500/5">
                         <div id="item-sanctuary"></div>
-                        <div id="hatched-hidden-group" class="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-gray-700/50">
-                            <div class="divide-y divide-gray-700/50">
+                        <div id="hatched-hidden-group" class="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-emerald-500/5">
+                            <div class="divide-y divide-emerald-500/5">
                                 <div id="item-diet"></div>
                                 <div id="item-infertility"></div>
                                 <div id="item-spasms"></div>
                                 <div id="item-mass"></div>
                             </div>
-                            <div class="divide-y divide-gray-700/50">
-                                <!-- Migration Row -->
-                                <div class="p-4 bg-white/5">
-                                    <div class="flex items-start">
-                                        <div class="pt-1">
-                                            <input type="checkbox" id="migration-check" class="checkbox-custom rounded border-gray-600 bg-gray-700 pointer-events-none opacity-50">
-                                        </div>
-                                        <div class="ml-3 flex-1">
-                                            <span class="block text-sm font-bold text-gray-200 dino-title tracking-wider">Migration Goals (2 Required)</span>
-                                            <div id="mz-selector" class="mt-2 flex items-center gap-2">
-                                                <button onclick="setZoneCount('mz', 0)" class="num-btn px-2.5 py-1 text-xs rounded border active" data-val="0">0</button>
-                                                <button onclick="setZoneCount('mz', 1)" class="num-btn px-2.5 py-1 text-xs rounded border" data-val="1">1</button>
-                                                <button onclick="setZoneCount('mz', 2)" class="num-btn px-2.5 py-1 text-xs rounded border" data-val="2">2</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- Patrol Row -->
-                                <div class="p-4 bg-white/5">
-                                    <div class="flex items-start">
-                                        <div class="pt-1">
-                                            <input type="checkbox" id="patrol-check" class="checkbox-custom rounded border-gray-600 bg-gray-700 pointer-events-none opacity-50">
-                                        </div>
-                                        <div class="ml-3 flex-1">
-                                            <span class="block text-sm font-bold text-gray-200 dino-title tracking-wider">Patrol Goals (4 Required)</span>
-                                            <div id="pz-selector" class="mt-2 flex items-center gap-2">
-                                                <button onclick="setZoneCount('pz', 0)" class="num-btn px-2.5 py-1 text-xs rounded border active" data-val="0">0</button>
-                                                <button onclick="setZoneCount('pz', 1)" class="num-btn px-2.5 py-1 text-xs rounded border" data-val="1">1</button>
-                                                <button onclick="setZoneCount('pz', 2)" class="num-btn px-2.5 py-1 text-xs rounded border" data-val="2">2</button>
-                                                <button onclick="setZoneCount('pz', 3)" class="num-btn px-2.5 py-1 text-xs rounded border" data-val="3">3</button>
-                                                <button onclick="setZoneCount('pz', 4)" class="num-btn px-2.5 py-1 text-xs rounded border" data-val="4">4</button>
+                            <div class="divide-y divide-emerald-500/5">
+                                <!-- Migration/Patrol Grouping Logic -->
+                                <div class="p-6 bg-emerald-500/[0.02]">
+                                    <div class="flex items-start gap-4">
+                                        <input type="checkbox" id="migration-check" class="checkbox-custom opacity-40 pointer-events-none">
+                                        <div class="flex-1">
+                                            <span class="block text-sm font-black text-gray-300 dino-title tracking-wider mb-3">Visit Migration or Patrol Zones</span>
+                                            <div class="space-y-4">
+                                                <div>
+                                                    <p class="text-[9px] text-gray-500 font-bold uppercase tracking-widest mb-2">Migration Markers (2 req.)</p>
+                                                    <div id="mz-selector" class="flex gap-2">
+                                                        <button onclick="setZoneCount('mz', 0)" class="num-btn" data-val="0">0</button>
+                                                        <button onclick="setZoneCount('mz', 1)" class="num-btn" data-val="1">1</button>
+                                                        <button onclick="setZoneCount('mz', 2)" class="num-btn" data-val="2">2</button>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <p class="text-[9px] text-gray-500 font-bold uppercase tracking-widest mb-2">Patrol Markers (4 req.)</p>
+                                                    <div id="pz-selector" class="flex gap-2">
+                                                        <button onclick="setZoneCount('pz', 0)" class="num-btn" data-val="0">0</button>
+                                                        <button onclick="setZoneCount('pz', 1)" class="num-btn" data-val="1">1</button>
+                                                        <button onclick="setZoneCount('pz', 2)" class="num-btn" data-val="2">2</button>
+                                                        <button onclick="setZoneCount('pz', 3)" class="num-btn" data-val="3">3</button>
+                                                        <button onclick="setZoneCount('pz', 4)" class="num-btn" data-val="4">4</button>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -329,79 +375,216 @@
                         </div>
                     </div>
                 </div>
+                <div class="mt-6 flex justify-between px-4">
+                    <button onclick="resetCurrentProfile()" class="text-[9px] font-black uppercase text-red-500/40 hover:text-red-500 tracking-widest transition-colors">Wipe Records</button>
+                    <p class="text-[9px] font-black uppercase text-gray-700 tracking-[0.2em]">Fan-made Tracker for The Isle Evrima</p>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Enhanced Social Footer -->
-    <footer class="mt-16 pt-8 pb-12 border-t border-gray-800/50 max-w-6xl mx-auto w-full">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
-            <div class="text-center md:text-left order-2 md:order-1">
-                <p class="text-[10px] uppercase font-bold text-gray-500 tracking-widest mb-1">Developer</p>
-                <a href="https://github.com/Peinful_" target="_blank" class="text-sm font-bold text-gray-300 hover:text-emerald-400 transition-colors flex items-center justify-center md:justify-start gap-1">
-                    Made with <span class="text-red-500">♥</span> by Pein
-                </a>
-            </div>
-
-            <div class="flex justify-center gap-6 order-1 md:order-2">
-                <a href="https://x.com/PeinfulZ" target="_blank" class="social-icon" title="X (Twitter)">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16"><path d="M12.6.75h2.454l-5.36 6.142L16 15.25h-4.937l-3.867-5.07-4.425 5.07H.316l5.733-6.57L0 .75h5.063l3.495 4.633L12.601.75Zm-.86 13.028h1.36L4.323 2.145H2.865l8.875 11.633Z"/></svg>
-                </a>
-                <a href="https://www.twitch.tv/PeinfulZ" target="_blank" class="social-icon" title="Twitch">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2H3v16h5v4l4-4h5l4-4V2zm-10 9V7m5 4V7"></path></svg>
-                </a>
-                <a href="https://www.youtube.com/@PeinfulZ" target="_blank" class="social-icon" title="YouTube">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z"></path><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"></polygon></svg>
-                </a>
-                <a href="https://discord.gg/p345CKHdCF" target="_blank" class="social-icon" title="Discord">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16"><path d="M13.545 2.907a13.227 13.227 0 0 0-3.257-1.011.05.05 0 0 0-.052.025c-.141.25-.297.577-.406.833a12.19 12.19 0 0 0-3.658 0 8.258 8.258 0 0 0-.412-.833.051.051 0 0 0-.052-.025c-1.125.194-2.22.534-3.257 1.011a.041.041 0 0 0-.021.018C.356 6.024-.213 9.047.066 12.032c.001.014.01.028.021.037a13.276 13.276 0 0 0 3.995 2.02.05.05 0 0 0 .056-.019c.308-.42.582-.863.818-1.329a.05.05 0 0 0-.01-.059.051.051 0 0 0-.018-.011 8.875 8.875 0 0 1-1.248-.595.05.05 0 0 1-.02-.066.051.051 0 0 1 .015-.019c.084-.063.168-.129.248-.195a.05.05 0 0 1 .051-.007c2.619 1.196 5.454 1.196 8.041 0a.052.052 0 0 1 .053.007c.08.066.164.132.248.195a.051.051 0 0 1-.004.085 8.254 8.254 0 0 1-1.249.594.05.05 0 0 0-.03.03.052.052 0 0 0 .003.041c.24.465.515.909.817 1.329a.05.05 0 0 0 .056.019 13.235 13.235 0 0 0 4.001-2.02.049.049 0 0 0 .021-.037c.334-3.451-.559-6.449-2.366-9.106a.034.034 0 0 0-.02-.019Zm-8.198 7.307c-.789 0-1.438-.724-1.438-1.612 0-.889.637-1.613 1.438-1.613.807 0 1.45.73 1.438 1.613 0 .888-.637 1.612-1.438 1.612Zm5.316 0c-.788 0-1.438-.724-1.438-1.612 0-.889.637-1.613 1.438-1.613.807 0 1.451.73 1.438 1.613 0 .888-.631 1.612-1.438 1.612Z"/></svg>
-                </a>
-            </div>
-
-            <div class="text-center md:text-right order-3">
-                <p class="text-[9px] text-emerald-500/80 font-bold uppercase tracking-widest leading-relaxed">
-                    Disclaimer: This is a fan-made tool. Not affiliated with Afterthought LLC. Data is saved locally in your browser.
-                </p>
-            </div>
-        </div>
-    </footer>
-
     <script>
-        const standardObjectives = [
-            { id: 'sanctuary', text: 'Visit Sanctuary', sub: 'Stay for ~10s.' },
-            { id: 'diet', text: 'Perfect Diet', sub: 'Balance all nutrients.' },
-            { id: 'infertility', text: 'Avoid Infertility', sub: 'Nutrients kept active.' },
-            { id: 'spasms', text: 'Avoid Spasms', sub: 'No cannibalism.' },
-            { id: 'nest', text: 'Nesting Goal', sub: 'Raise a hatchling to 50%.' },
-            { id: 'mass', text: 'Mass Migration', sub: 'Visit primary zone.' }
+        const coreObjectives = [
+            { id: 'sanctuary', text: 'Visit Sanctuary', sub: 'Survive the ritual as a juvenile.' },
+            { id: 'diet', text: 'Achieve Perfect Diet', sub: 'All 3 nutrients fully saturated at once.' },
+            { id: 'infertility', text: 'Never become Temporarily Infertile', sub: 'Maintain at least one nutrient value above 0.' },
+            { id: 'spasms', text: 'Never get Muscle Spasms', sub: 'Avoid cannibalism and risky nutrition.' },
+            { id: 'nest', text: 'Nest and raise a hatchling to 50%', sub: 'Cooperative breeding requirement.' },
+            { id: 'mass', text: 'Visit a Mass Migration Zone', sub: 'Complete the specific Mass Migration event.' }
         ];
 
         const createDefaultProfileData = (species = 'Pachycephalosaurus') => ({
-            name: species, 
-            nickname: '', 
-            spawnType: 'spawned', 
-            mz: 0, 
-            pz: 0, 
-            server: '', 
-            status: 'Alive', 
-            checks: {
-                'infertility': true,
-                'spasms': true
-            }
+            name: species, nickname: '', spawnType: 'spawned', mz: 0, pz: 0, server: '', status: 'Alive', 
+            checks: { 'infertility': true, 'spasms': true }
         });
 
-        let profiles = JSON.parse(localStorage.getItem('isle_elder_profiles_v13')) || {
-            'default': createDefaultProfileData()
-        };
-        let activeId = localStorage.getItem('isle_elder_active_id_v13') || 'default';
+        let profiles = JSON.parse(localStorage.getItem('isle_v14')) || { 'default': createDefaultProfileData() };
+        let activeId = localStorage.getItem('isle_v14_active') || 'default';
 
         function init() {
-            if (!localStorage.getItem('privacy_accepted')) {
-                document.getElementById('privacy-modal').style.display = 'flex';
-            }
+            if (!localStorage.getItem('privacy_accepted')) document.getElementById('privacy-modal').style.display = 'flex';
             renderChecklist();
-            renderProfileList();
+            renderProfileOptions();
             loadProfile(activeId);
+            
+            window.addEventListener('click', (e) => {
+                if (!e.target.closest('.custom-dropdown')) {
+                    document.querySelectorAll('.dropdown-options').forEach(d => d.classList.remove('show'));
+                }
+            });
+        }
+
+        function toggleDropdown(id) {
+            const dropdown = document.getElementById(id);
+            const isShowing = dropdown.classList.contains('show');
+            document.querySelectorAll('.dropdown-options').forEach(d => d.classList.remove('show'));
+            if (!isShowing) dropdown.classList.add('show');
+        }
+
+        function renderProfileOptions() {
+            const container = document.getElementById('profile-options');
+            container.innerHTML = Object.keys(profiles).map(id => {
+                const p = profiles[id];
+                const display = p.nickname ? `${p.nickname} (${p.name})` : p.name;
+                return `<div class="option-item" onclick="selectProfile('${id}')">${display}</div>`;
+            }).join('');
+        }
+
+        function selectProfile(id) {
+            saveCurrentState();
+            activeId = id;
+            loadProfile(id);
+            document.getElementById('profile-options').classList.remove('show');
+        }
+
+        function selectSpecies(name) {
+            profiles[activeId].name = name;
+            document.getElementById('selected-species-label').innerText = name;
+            document.getElementById('species-options').classList.remove('show');
+            saveAll();
+            renderProfileOptions();
+        }
+
+        function selectStatus(status) {
+            profiles[activeId].status = status;
+            document.getElementById('selected-status-label').innerText = status;
+            document.getElementById('status-options').classList.remove('show');
+            saveCurrentState();
+        }
+
+        function loadProfile(id) {
+            const p = profiles[id];
+            document.getElementById('selected-profile-label').innerText = p.nickname ? p.nickname : p.name;
+            document.getElementById('selected-species-label').innerText = p.name;
+            document.getElementById('selected-status-label').innerText = p.status || 'Alive';
+            document.getElementById('server-name').value = p.server || '';
+            setZoneCount('mz', p.mz || 0);
+            setZoneCount('pz', p.pz || 0);
+            setSpawn(p.spawnType);
+            
+            coreObjectives.forEach(obj => {
+                const cb = document.getElementById(obj.id);
+                if (cb) cb.checked = p.checks[obj.id] || false;
+            });
+            updateProgress();
+        }
+
+        function renderChecklist() {
+            coreObjectives.forEach(obj => {
+                const el = document.getElementById(`item-${obj.id}`);
+                if (!el) return;
+                el.innerHTML = `
+                    <label class="flex items-start p-6 hover:bg-emerald-500/[0.04] transition-all cursor-pointer group">
+                        <input type="checkbox" id="${obj.id}" class="checkbox-custom mt-1" onchange="updateProgress()">
+                        <div class="ml-4">
+                            <span class="block text-sm font-black text-gray-300 group-hover:text-emerald-400 transition-colors dino-title tracking-widest uppercase">${obj.text}</span>
+                            <span class="block text-[10px] text-gray-600 uppercase font-black tracking-widest mt-1">${obj.sub}</span>
+                        </div>
+                    </label>
+                `;
+            });
+        }
+
+        function updateProgress() {
+            const p = profiles[activeId];
+            const isHatched = p.spawnType === 'hatched';
+            
+            p.mz = parseInt(p.mz) || 0;
+            p.pz = parseInt(p.pz) || 0;
+            
+            // Logic for the Migration/Patrol requirement
+            const migrationMet = p.mz >= 2 || p.pz >= 4;
+            document.getElementById('migration-check').checked = migrationMet;
+
+            let count = 0;
+            // If born from egg, that's automatically 1/5 of the required objectives
+            if (isHatched) count++;
+
+            coreObjectives.forEach(obj => {
+                const cb = document.getElementById(obj.id);
+                if (cb && cb.checked) count++;
+            });
+            
+            if (migrationMet) count++;
+
+            // Cap at 5 for the UI
+            const displayCount = Math.min(count, 5);
+            document.getElementById('counter').innerText = `${displayCount}/5`;
+            const pct = (displayCount / 5) * 100;
+            document.getElementById('progress-bar').style.width = `${pct}%`;
+            
+            const msg = document.getElementById('status-msg');
+            if (displayCount >= 5) {
+                msg.innerText = "Elder Status Attained";
+                msg.className = "text-center text-[10px] font-black uppercase tracking-[0.3em] text-emerald-400 animate-pulse";
+            } else {
+                msg.innerText = "Growth Required";
+                msg.className = "text-center text-[10px] font-black uppercase tracking-[0.3em] text-gray-600";
+            }
+            saveCurrentState();
+        }
+
+        function setSpawn(type) {
+            profiles[activeId].spawnType = type;
+            const spawnedBtn = document.getElementById('btn-spawned');
+            const hatchedBtn = document.getElementById('btn-hatched');
+            
+            if (type === 'hatched') {
+                hatchedBtn.className = "flex-1 py-3 text-[10px] font-black rounded-xl bg-emerald-600 text-black shadow-lg uppercase tracking-widest";
+                spawnedBtn.className = "flex-1 py-3 text-[10px] font-black rounded-xl text-gray-600 hover:text-gray-400 uppercase tracking-widest";
+            } else {
+                spawnedBtn.className = "flex-1 py-3 text-[10px] font-black rounded-xl bg-emerald-600 text-black shadow-lg uppercase tracking-widest";
+                hatchedBtn.className = "flex-1 py-3 text-[10px] font-black rounded-xl text-gray-600 hover:text-gray-400 uppercase tracking-widest";
+            }
+            updateProgress();
+        }
+
+        function setZoneCount(type, val) {
+            profiles[activeId][type] = val;
+            const parent = document.getElementById(`${type}-selector`);
+            parent.querySelectorAll('.num-btn').forEach(btn => {
+                btn.classList.toggle('active', parseInt(btn.dataset.val) === val);
+            });
+            updateProgress();
+        }
+
+        function saveCurrentState() {
+            const p = profiles[activeId];
+            p.server = document.getElementById('server-name').value;
+            p.checks = {};
+            coreObjectives.forEach(obj => {
+                const cb = document.getElementById(obj.id);
+                if (cb) p.checks[obj.id] = cb.checked;
+            });
+            saveAll();
+        }
+
+        function createNewProfile() {
+            const id = 'p_' + Date.now();
+            profiles[id] = createDefaultProfileData();
+            activeId = id;
+            saveAll();
+            renderProfileOptions();
+            loadProfile(id);
+            openRenameModal();
+        }
+
+        function openRenameModal() {
+            document.getElementById('modal-nickname-input').value = profiles[activeId].nickname || '';
+            document.getElementById('rename-modal').style.display = 'flex';
+        }
+        function closeRenameModal() { document.getElementById('rename-modal').style.display = 'none'; }
+        function saveNicknameFromModal() {
+            profiles[activeId].nickname = document.getElementById('modal-nickname-input').value;
+            saveAll();
+            renderProfileOptions();
+            loadProfile(activeId);
+            closeRenameModal();
+        }
+
+        function saveAll() {
+            localStorage.setItem('isle_v14', JSON.stringify(profiles));
+            localStorage.setItem('isle_v14_active', activeId);
         }
 
         function acceptPrivacy() {
@@ -409,81 +592,27 @@
             document.getElementById('privacy-modal').style.display = 'none';
         }
 
-        function manualSave() {
-            saveCurrentState();
-            const btn = document.getElementById('manual-save-btn');
-            const originalContent = btn.innerHTML;
-            btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16"><path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z"/></svg><span>Saved!</span>`;
-            btn.classList.replace('bg-emerald-900/40', 'bg-emerald-600');
-            btn.classList.replace('text-emerald-400', 'text-white');
-            setTimeout(() => {
-                btn.innerHTML = originalContent;
-                btn.classList.replace('bg-emerald-600', 'bg-emerald-900/40');
-                btn.classList.replace('text-white', 'text-emerald-400');
-            }, 2000);
+        function deleteCurrentProfile() {
+            if (Object.keys(profiles).length <= 1) return;
+            if (confirm("Permanently erase this dino's data?")) {
+                delete profiles[activeId];
+                activeId = Object.keys(profiles)[0];
+                saveAll();
+                renderProfileOptions();
+                loadProfile(activeId);
+            }
         }
 
-        function openRenameModal() {
-            const p = profiles[activeId];
-            document.getElementById('modal-nickname-input').value = p.nickname || '';
-            document.getElementById('rename-modal').style.display = 'flex';
-            document.getElementById('modal-nickname-input').focus();
+        function resetCurrentProfile() {
+            if (confirm("Reset current progress?")) {
+                profiles[activeId].mz = 0;
+                profiles[activeId].pz = 0;
+                profiles[activeId].checks = { 'infertility': true, 'spasms': true };
+                loadProfile(activeId);
+            }
         }
 
-        function closeRenameModal() {
-            document.getElementById('rename-modal').style.display = 'none';
-        }
-
-        function saveNicknameFromModal() {
-            const newName = document.getElementById('modal-nickname-input').value;
-            profiles[activeId].nickname = newName;
-            saveAll();
-            renderProfileList();
-            closeRenameModal();
-        }
-
-        function updateDinoPlaceholder(species) {
-            const letter = species ? species.charAt(0).toUpperCase() : '?';
-            document.getElementById('dino-letter').innerText = letter;
-        }
-
-        function renderProfileList() {
-            const select = document.getElementById('profile-select');
-            select.innerHTML = Object.keys(profiles).map(id => {
-                const p = profiles[id];
-                const statusEmoji = p.status === 'Dead' ? '💀' : p.status === 'Stored' ? '📦' : '🦖';
-                const displayName = p.nickname ? `${p.nickname} (${p.name})` : p.name;
-                return `<option value="${id}" ${id === activeId ? 'selected' : ''}>${statusEmoji} ${displayName}</option>`;
-            }).join('');
-        }
-
-        function renderChecklist() {
-            standardObjectives.forEach(obj => {
-                const el = document.getElementById(`item-${obj.id}`);
-                if (!el) return;
-                el.innerHTML = `
-                    <label class="flex items-start p-4 hover:bg-white/5 transition-colors cursor-pointer group">
-                        <div class="pt-1">
-                            <input type="checkbox" id="${obj.id}" class="checkbox-custom rounded border-gray-600 bg-gray-700" onchange="updateProgress()">
-                        </div>
-                        <div class="ml-3">
-                            <span class="block text-sm font-bold text-gray-200 group-hover:text-emerald-400 transition-colors dino-title tracking-widest">${obj.text}</span>
-                            <span class="block text-[10px] text-gray-500 uppercase font-medium tracking-widest">${obj.sub}</span>
-                        </div>
-                    </label>
-                `;
-            });
-        }
-
-        function switchProfile() {
-            saveCurrentState();
-            activeId = document.getElementById('profile-select').value;
-            localStorage.setItem('isle_elder_active_id_v13', activeId);
-            loadProfile(activeId);
-        }
-
-        function createNewProfile() {
-            const species = document.getElementById('dino-species').value || "Pachycephalosaurus";
-            const id = 'p_' + Date.now();
-            profiles[id] = createDefaultProfileData(species);
-            activeId = id
+        window.onload = init;
+    </script>
+</body>
+</html>
