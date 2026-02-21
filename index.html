@@ -40,13 +40,9 @@
         .progress-glow {
             box-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
         }
-        input[type="number"]::-webkit-inner-spin-button,
-        input[type="number"]::-webkit-outer-spin-button {
-            opacity: 1;
-        }
         
-        /* Styled Dropdowns */
-        select, input[type="text"] {
+        /* Styled Dropdowns specifically */
+        select {
             background: rgba(0, 0, 0, 0.6) !important;
             border: 1px solid rgba(16, 185, 129, 0.3) !important;
             color: #10b981 !important;
@@ -57,12 +53,27 @@
             background-position: right 0.5rem center !important;
             background-size: 1.5em 1.5em !important;
             padding-right: 2.5rem !important;
+            cursor: pointer;
         }
         
+        /* Styled Text Inputs */
+        input[type="text"], input[type="number"] {
+            background: rgba(0, 0, 0, 0.6) !important;
+            border: 1px solid rgba(16, 185, 129, 0.3) !important;
+            color: #10b981 !important;
+            font-family: 'Cinzel', serif;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        input[type="text"]:focus, input[type="number"]:focus {
+            border-color: #10b981 !important;
+        }
+
         select option {
             background-color: #0a0c0f;
             color: #10b981;
-            font-family: 'sans-serif'; /* Options don't always support custom fonts well */
+            font-family: sans-serif;
         }
 
         .hidden-objective {
@@ -163,7 +174,6 @@
                     <span id="counter" class="text-2xl font-mono text-emerald-400">0/5</span>
                     <p class="text-[10px] uppercase font-bold text-gray-500 tracking-widest">Run Progress</p>
                 </div>
-                <!-- Profile Placeholder Box -->
                 <div id="dino-icon-placeholder" class="w-16 h-16 md:w-20 md:h-20 dino-avatar rounded-xl overflow-hidden shrink-0">
                     <span id="dino-letter" class="text-3xl md:text-4xl font-bold text-emerald-400">?</span>
                 </div>
@@ -171,8 +181,7 @@
         </header>
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-            
-            <!-- Left Column: Profile & Settings -->
+            <!-- Left Column -->
             <div class="lg:col-span-4 space-y-4">
                 <div class="glass-panel rounded-2xl p-4">
                     <div class="flex items-center justify-between mb-3">
@@ -181,7 +190,7 @@
                     </div>
                     
                     <div class="flex gap-2 mb-4">
-                        <select id="profile-select" onchange="switchProfile()" class="flex-1 rounded-lg p-2 text-sm text-emerald-400 outline-none font-bold">
+                        <select id="profile-select" onchange="switchProfile()" class="flex-1 rounded-lg p-2 text-sm outline-none font-bold">
                         </select>
                         <button onclick="openRenameModal()" class="p-2 bg-emerald-900/20 text-emerald-500 rounded-lg hover:bg-emerald-900/40 transition-colors" title="Rename Dino">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"/></svg>
@@ -224,12 +233,12 @@
                         <div>
                             <label class="block text-[10px] uppercase font-bold text-gray-500 mb-1 ml-1 tracking-widest">Status & Server</label>
                             <div class="flex gap-2">
-                                <select id="life-status" onchange="updateProgress()" class="flex-1 rounded-lg p-2 text-sm outline-none">
-                                    <option value="Alive">🟢 Alive</option>
-                                    <option value="Dead">💀 Dead</option>
-                                    <option value="Stored">📦 Stored</option>
+                                <select id="life-status" onchange="updateProgress()" class="w-1/3 rounded-lg p-2 text-sm outline-none">
+                                    <option value="Alive">Alive</option>
+                                    <option value="Dead">Dead</option>
+                                    <option value="Stored">Stored</option>
                                 </select>
-                                <input type="text" id="server-name" placeholder="Server Name..." oninput="updateProgress()" class="flex-1 rounded-lg p-2 text-sm text-emerald-400 outline-none">
+                                <input type="text" id="server-name" placeholder="SERVER NAME..." oninput="updateProgress()" class="w-2/3 rounded-lg p-2 text-sm outline-none uppercase font-bold tracking-widest">
                             </div>
                         </div>
                     </div>
@@ -258,7 +267,7 @@
                 </div>
             </div>
 
-            <!-- Right Column: Checklist -->
+            <!-- Right Column -->
             <div class="lg:col-span-8">
                 <div class="glass-panel rounded-2xl overflow-hidden h-full">
                     <div id="checklist-container" class="divide-y divide-gray-700/50">
@@ -279,7 +288,7 @@
                                         <div class="ml-3 flex-1">
                                             <span class="block text-sm font-bold text-gray-200 dino-title tracking-wider">Migration Goals (2)</span>
                                             <div class="mt-2 flex items-center gap-3">
-                                                <input type="number" id="mz-count" value="0" min="0" max="10" onchange="updateProgress()" class="bg-black/40 border border-emerald-500/30 text-emerald-400 font-mono text-lg w-14 rounded-lg p-1 text-center outline-none">
+                                                <input type="number" id="mz-count" value="0" min="0" max="10" onchange="updateProgress()" class="w-14 rounded-lg p-1 text-center">
                                                 <span class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Zones Visited</span>
                                             </div>
                                         </div>
@@ -293,7 +302,7 @@
                                         <div class="ml-3 flex-1">
                                             <span class="block text-sm font-bold text-gray-200 dino-title tracking-wider">Patrol Goals (4)</span>
                                             <div class="mt-2 flex items-center gap-3">
-                                                <input type="number" id="pz-count" value="0" min="0" max="10" onchange="updateProgress()" class="bg-black/40 border border-emerald-500/30 text-emerald-400 font-mono text-lg w-14 rounded-lg p-1 text-center outline-none">
+                                                <input type="number" id="pz-count" value="0" min="0" max="10" onchange="updateProgress()" class="w-14 rounded-lg p-1 text-center">
                                                 <span class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Zones Visited</span>
                                             </div>
                                         </div>
@@ -311,7 +320,6 @@
     <!-- Enhanced Social Footer -->
     <footer class="mt-16 pt-8 pb-12 border-t border-gray-800/50 max-w-6xl mx-auto w-full">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
-            <!-- Credits -->
             <div class="text-center md:text-left order-2 md:order-1">
                 <p class="text-[10px] uppercase font-bold text-gray-500 tracking-widest mb-1">Developer</p>
                 <a href="https://github.com/Peinful_" target="_blank" class="text-sm font-bold text-gray-300 hover:text-emerald-400 transition-colors flex items-center justify-center md:justify-start gap-1">
@@ -319,12 +327,9 @@
                 </a>
             </div>
 
-            <!-- Social Links -->
             <div class="flex justify-center gap-6 order-1 md:order-2">
                 <a href="https://x.com/PeinfulZ" target="_blank" class="social-icon" title="X (Twitter)">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
-                        <path d="M12.6.75h2.454l-5.36 6.142L16 15.25h-4.937l-3.867-5.07-4.425 5.07H.316l5.733-6.57L0 .75h5.063l3.495 4.633L12.601.75Zm-.86 13.028h1.36L4.323 2.145H2.865l8.875 11.633Z"/>
-                    </svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16"><path d="M12.6.75h2.454l-5.36 6.142L16 15.25h-4.937l-3.867-5.07-4.425 5.07H.316l5.733-6.57L0 .75h5.063l3.495 4.633L12.601.75Zm-.86 13.028h1.36L4.323 2.145H2.865l8.875 11.633Z"/></svg>
                 </a>
                 <a href="https://www.twitch.tv/PeinfulZ" target="_blank" class="social-icon" title="Twitch">
                     <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2H3v16h5v4l4-4h5l4-4V2zm-10 9V7m5 4V7"></path></svg>
@@ -333,13 +338,10 @@
                     <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z"></path><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"></polygon></svg>
                 </a>
                 <a href="https://discord.gg/p345CKHdCF" target="_blank" class="social-icon" title="Discord">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
-                        <path d="M13.545 2.907a13.227 13.227 0 0 0-3.257-1.011.05.05 0 0 0-.052.025c-.141.25-.297.577-.406.833a12.19 12.19 0 0 0-3.658 0 8.258 8.258 0 0 0-.412-.833.051.051 0 0 0-.052-.025c-1.125.194-2.22.534-3.257 1.011a.041.041 0 0 0-.021.018C.356 6.024-.213 9.047.066 12.032c.001.014.01.028.021.037a13.276 13.276 0 0 0 3.995 2.02.05.05 0 0 0 .056-.019c.308-.42.582-.863.818-1.329a.05.05 0 0 0-.01-.059.051.051 0 0 0-.018-.011 8.875 8.875 0 0 1-1.248-.595.05.05 0 0 1-.02-.066.051.051 0 0 1 .015-.019c.084-.063.168-.129.248-.195a.05.05 0 0 1 .051-.007c2.619 1.196 5.454 1.196 8.041 0a.052.052 0 0 1 .053.007c.08.066.164.132.248.195a.051.051 0 0 1-.004.085 8.254 8.254 0 0 1-1.249.594.05.05 0 0 0-.03.03.052.052 0 0 0 .003.041c.24.465.515.909.817 1.329a.05.05 0 0 0 .056.019 13.235 13.235 0 0 0 4.001-2.02.049.049 0 0 0 .021-.037c.334-3.451-.559-6.449-2.366-9.106a.034.034 0 0 0-.02-.019Zm-8.198 7.307c-.789 0-1.438-.724-1.438-1.612 0-.889.637-1.613 1.438-1.613.807 0 1.45.73 1.438 1.613 0 .888-.637 1.612-1.438 1.612Zm5.316 0c-.788 0-1.438-.724-1.438-1.612 0-.889.637-1.613 1.438-1.613.807 0 1.451.73 1.438 1.613 0 .888-.631 1.612-1.438 1.612Z"/>
-                    </svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16"><path d="M13.545 2.907a13.227 13.227 0 0 0-3.257-1.011.05.05 0 0 0-.052.025c-.141.25-.297.577-.406.833a12.19 12.19 0 0 0-3.658 0 8.258 8.258 0 0 0-.412-.833.051.051 0 0 0-.052-.025c-1.125.194-2.22.534-3.257 1.011a.041.041 0 0 0-.021.018C.356 6.024-.213 9.047.066 12.032c.001.014.01.028.021.037a13.276 13.276 0 0 0 3.995 2.02.05.05 0 0 0 .056-.019c.308-.42.582-.863.818-1.329a.05.05 0 0 0-.01-.059.051.051 0 0 0-.018-.011 8.875 8.875 0 0 1-1.248-.595.05.05 0 0 1-.02-.066.051.051 0 0 1 .015-.019c.084-.063.168-.129.248-.195a.05.05 0 0 1 .051-.007c2.619 1.196 5.454 1.196 8.041 0a.052.052 0 0 1 .053.007c.08.066.164.132.248.195a.051.051 0 0 1-.004.085 8.254 8.254 0 0 1-1.249.594.05.05 0 0 0-.03.03.052.052 0 0 0 .003.041c.24.465.515.909.817 1.329a.05.05 0 0 0 .056.019 13.235 13.235 0 0 0 4.001-2.02.049.049 0 0 0 .021-.037c.334-3.451-.559-6.449-2.366-9.106a.034.034 0 0 0-.02-.019Zm-8.198 7.307c-.789 0-1.438-.724-1.438-1.612 0-.889.637-1.613 1.438-1.613.807 0 1.45.73 1.438 1.613 0 .888-.637 1.612-1.438 1.612Zm5.316 0c-.788 0-1.438-.724-1.438-1.612 0-.889.637-1.613 1.438-1.613.807 0 1.451.73 1.438 1.613 0 .888-.631 1.612-1.438 1.612Z"/></svg>
                 </a>
             </div>
 
-            <!-- Legal/Disclaimer -->
             <div class="text-center md:text-right order-3">
                 <p class="text-[9px] text-emerald-500/80 font-bold uppercase tracking-widest leading-relaxed">
                     Disclaimer: This is a fan-made tool. Not affiliated with Afterthought LLC. Data is saved locally in your browser.
@@ -358,7 +360,6 @@
             { id: 'mass', text: 'Mass Migration', sub: 'Visit primary zone.' }
         ];
 
-        // Default profile template
         const createDefaultProfileData = (species = 'Pachycephalosaurus') => ({
             name: species, 
             nickname: '', 
@@ -368,21 +369,21 @@
             server: '', 
             status: 'Alive', 
             checks: {
-                'infertility': true, // Always true on creation
-                'spasms': true       // Always true on creation
+                'infertility': true,
+                'spasms': true
             }
         });
 
-        let profiles = JSON.parse(localStorage.getItem('isle_elder_profiles_v11')) || {
+        let profiles = JSON.parse(localStorage.getItem('isle_elder_profiles_v12')) || {
             'default': createDefaultProfileData()
         };
-        let activeId = localStorage.getItem('isle_elder_active_id_v11') || 'default';
+        let activeId = localStorage.getItem('isle_elder_active_id_v12') || 'default';
 
         function init() {
             if (!localStorage.getItem('privacy_accepted')) {
                 document.getElementById('privacy-modal').style.display = 'flex';
             }
-            renderChecklist(); // Render DOM first
+            renderChecklist();
             renderProfileList();
             loadProfile(activeId);
         }
@@ -396,13 +397,9 @@
             saveCurrentState();
             const btn = document.getElementById('manual-save-btn');
             const originalContent = btn.innerHTML;
-            btn.innerHTML = `
-                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16"><path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z"/></svg>
-                <span>Saved!</span>
-            `;
+            btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16"><path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z"/></svg><span>Saved!</span>`;
             btn.classList.replace('bg-emerald-900/40', 'bg-emerald-600');
             btn.classList.replace('text-emerald-400', 'text-white');
-            
             setTimeout(() => {
                 btn.innerHTML = originalContent;
                 btn.classList.replace('bg-emerald-600', 'bg-emerald-900/40');
@@ -465,7 +462,7 @@
         function switchProfile() {
             saveCurrentState();
             activeId = document.getElementById('profile-select').value;
-            localStorage.setItem('isle_elder_active_id_v11', activeId);
+            localStorage.setItem('isle_elder_active_id_v12', activeId);
             loadProfile(activeId);
         }
 
@@ -549,8 +546,6 @@
 
         function loadProfile(id) {
             const p = profiles[id];
-            
-            // UI elements update
             document.getElementById('mz-count').value = p.mz || 0;
             document.getElementById('pz-count').value = p.pz || 0;
             document.getElementById('server-name').value = p.server || '';
@@ -558,10 +553,8 @@
             document.getElementById('dino-species').value = p.name;
             updateDinoPlaceholder(p.name);
 
-            // Logic to ensure standard checkboxes are correctly toggled based on saved data
             document.querySelectorAll('#checklist-container input[type="checkbox"]').forEach(cb => {
                 if (cb.id !== 'migration-check' && cb.id !== 'patrol-check') {
-                    // Check if value exists in state, otherwise default to true for these specific IDs
                     const isMandatoryDefault = (cb.id === 'infertility' || cb.id === 'spasms');
                     cb.checked = p.checks.hasOwnProperty(cb.id) ? p.checks[cb.id] : isMandatoryDefault;
                 }
@@ -588,15 +581,14 @@
         }
 
         function saveAll() {
-            localStorage.setItem('isle_elder_profiles_v11', JSON.stringify(profiles));
-            localStorage.setItem('isle_elder_active_id_v11', activeId);
+            localStorage.setItem('isle_elder_profiles_v12', JSON.stringify(profiles));
+            localStorage.setItem('isle_elder_active_id_v12', activeId);
         }
 
         function resetCurrentProfile() {
             if(confirm("Clear progress for this dino?")) {
                 profiles[activeId].mz = 0;
                 profiles[activeId].pz = 0;
-                // Force reset checkboxes to default state
                 profiles[activeId].checks = { 'infertility': true, 'spasms': true };
                 loadProfile(activeId);
             }
