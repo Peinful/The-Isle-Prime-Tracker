@@ -44,10 +44,27 @@
         input[type="number"]::-webkit-outer-spin-button {
             opacity: 1;
         }
+        
+        /* Styled Dropdowns */
         select, input[type="text"] {
-            background: rgba(0, 0, 0, 0.4);
-            border: 1px solid rgba(75, 85, 99, 0.5);
+            background: rgba(0, 0, 0, 0.6) !important;
+            border: 1px solid rgba(16, 185, 129, 0.3) !important;
+            color: #10b981 !important;
+            font-family: 'Cinzel', serif;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%2310b981' viewBox='0 0 24 24'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E") !important;
+            background-repeat: no-repeat !important;
+            background-position: right 0.5rem center !important;
+            background-size: 1.5em 1.5em !important;
+            padding-right: 2.5rem !important;
         }
+        
+        select option {
+            background-color: #0a0c0f;
+            color: #10b981;
+            font-family: 'sans-serif'; /* Options don't always support custom fonts well */
+        }
+
         .hidden-objective {
             display: none !important;
         }
@@ -177,7 +194,7 @@
                     <div class="space-y-3">
                         <div>
                             <label class="block text-[10px] uppercase font-bold text-gray-500 mb-1 ml-1 tracking-widest">Species</label>
-                            <select id="dino-species" onchange="updateSpecies()" class="w-full rounded-lg p-2 text-sm text-white outline-none">
+                            <select id="dino-species" onchange="updateSpecies()" class="w-full rounded-lg p-2 text-sm outline-none">
                                 <option value="" disabled>Select Species...</option>
                                 <optgroup label="Carnivores">
                                     <option value="Ceratosaurus">Ceratosaurus</option>
@@ -207,12 +224,12 @@
                         <div>
                             <label class="block text-[10px] uppercase font-bold text-gray-500 mb-1 ml-1 tracking-widest">Status & Server</label>
                             <div class="flex gap-2">
-                                <select id="life-status" onchange="updateProgress()" class="flex-1 rounded-lg p-2 text-sm text-white outline-none">
+                                <select id="life-status" onchange="updateProgress()" class="flex-1 rounded-lg p-2 text-sm outline-none">
                                     <option value="Alive">🟢 Alive</option>
                                     <option value="Dead">💀 Dead</option>
                                     <option value="Stored">📦 Stored</option>
                                 </select>
-                                <input type="text" id="server-name" placeholder="Server Name..." oninput="updateProgress()" class="flex-1 rounded-lg p-2 text-sm text-white outline-none">
+                                <input type="text" id="server-name" placeholder="Server Name..." oninput="updateProgress()" class="flex-1 rounded-lg p-2 text-sm text-emerald-400 outline-none">
                             </div>
                         </div>
                     </div>
@@ -262,7 +279,7 @@
                                         <div class="ml-3 flex-1">
                                             <span class="block text-sm font-bold text-gray-200 dino-title tracking-wider">Migration Goals (2)</span>
                                             <div class="mt-2 flex items-center gap-3">
-                                                <input type="number" id="mz-count" value="0" min="0" max="10" onchange="updateProgress()" class="bg-black/40 border border-gray-700 text-emerald-400 font-mono text-lg w-14 rounded-lg p-1 text-center outline-none">
+                                                <input type="number" id="mz-count" value="0" min="0" max="10" onchange="updateProgress()" class="bg-black/40 border border-emerald-500/30 text-emerald-400 font-mono text-lg w-14 rounded-lg p-1 text-center outline-none">
                                                 <span class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Zones Visited</span>
                                             </div>
                                         </div>
@@ -276,7 +293,7 @@
                                         <div class="ml-3 flex-1">
                                             <span class="block text-sm font-bold text-gray-200 dino-title tracking-wider">Patrol Goals (4)</span>
                                             <div class="mt-2 flex items-center gap-3">
-                                                <input type="number" id="pz-count" value="0" min="0" max="10" onchange="updateProgress()" class="bg-black/40 border border-gray-700 text-emerald-400 font-mono text-lg w-14 rounded-lg p-1 text-center outline-none">
+                                                <input type="number" id="pz-count" value="0" min="0" max="10" onchange="updateProgress()" class="bg-black/40 border border-emerald-500/30 text-emerald-400 font-mono text-lg w-14 rounded-lg p-1 text-center outline-none">
                                                 <span class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Zones Visited</span>
                                             </div>
                                         </div>
@@ -324,7 +341,7 @@
 
             <!-- Legal/Disclaimer -->
             <div class="text-center md:text-right order-3">
-                <p class="text-[9px] text-gray-600 uppercase tracking-widest leading-relaxed">
+                <p class="text-[9px] text-emerald-500/80 font-bold uppercase tracking-widest leading-relaxed">
                     Disclaimer: This is a fan-made tool. Not affiliated with Afterthought LLC. Data is saved locally in your browser.
                 </p>
             </div>
@@ -351,22 +368,22 @@
             server: '', 
             status: 'Alive', 
             checks: {
-                'infertility': true, // Automatically checked by default
-                'spasms': true       // Automatically checked by default
+                'infertility': true, // Always true on creation
+                'spasms': true       // Always true on creation
             }
         });
 
-        let profiles = JSON.parse(localStorage.getItem('isle_elder_profiles_v10')) || {
+        let profiles = JSON.parse(localStorage.getItem('isle_elder_profiles_v11')) || {
             'default': createDefaultProfileData()
         };
-        let activeId = localStorage.getItem('isle_elder_active_id_v10') || 'default';
+        let activeId = localStorage.getItem('isle_elder_active_id_v11') || 'default';
 
         function init() {
             if (!localStorage.getItem('privacy_accepted')) {
                 document.getElementById('privacy-modal').style.display = 'flex';
             }
+            renderChecklist(); // Render DOM first
             renderProfileList();
-            renderChecklist();
             loadProfile(activeId);
         }
 
@@ -448,7 +465,7 @@
         function switchProfile() {
             saveCurrentState();
             activeId = document.getElementById('profile-select').value;
-            localStorage.setItem('isle_elder_active_id_v10', activeId);
+            localStorage.setItem('isle_elder_active_id_v11', activeId);
             loadProfile(activeId);
         }
 
@@ -532,17 +549,24 @@
 
         function loadProfile(id) {
             const p = profiles[id];
+            
+            // UI elements update
             document.getElementById('mz-count').value = p.mz || 0;
             document.getElementById('pz-count').value = p.pz || 0;
             document.getElementById('server-name').value = p.server || '';
             document.getElementById('life-status').value = p.status || 'Alive';
             document.getElementById('dino-species').value = p.name;
             updateDinoPlaceholder(p.name);
-            document.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+
+            // Logic to ensure standard checkboxes are correctly toggled based on saved data
+            document.querySelectorAll('#checklist-container input[type="checkbox"]').forEach(cb => {
                 if (cb.id !== 'migration-check' && cb.id !== 'patrol-check') {
-                    cb.checked = p.checks[cb.id] || false;
+                    // Check if value exists in state, otherwise default to true for these specific IDs
+                    const isMandatoryDefault = (cb.id === 'infertility' || cb.id === 'spasms');
+                    cb.checked = p.checks.hasOwnProperty(cb.id) ? p.checks[cb.id] : isMandatoryDefault;
                 }
             });
+
             setSpawn(p.spawnType || 'spawned');
             updateProgress();
         }
@@ -555,21 +579,24 @@
             p.status = document.getElementById('life-status').value;
             p.name = document.getElementById('dino-species').value;
             p.checks = {};
-            document.querySelectorAll('input[type="checkbox"]').forEach(cb => {
-                p.checks[cb.id] = cb.checked;
+            document.querySelectorAll('#checklist-container input[type="checkbox"]').forEach(cb => {
+                if (cb.id !== 'migration-check' && cb.id !== 'patrol-check') {
+                    p.checks[cb.id] = cb.checked;
+                }
             });
             saveAll();
         }
 
         function saveAll() {
-            localStorage.setItem('isle_elder_profiles_v10', JSON.stringify(profiles));
-            localStorage.setItem('isle_elder_active_id_v10', activeId);
+            localStorage.setItem('isle_elder_profiles_v11', JSON.stringify(profiles));
+            localStorage.setItem('isle_elder_active_id_v11', activeId);
         }
 
         function resetCurrentProfile() {
             if(confirm("Clear progress for this dino?")) {
                 profiles[activeId].mz = 0;
                 profiles[activeId].pz = 0;
+                // Force reset checkboxes to default state
                 profiles[activeId].checks = { 'infertility': true, 'spasms': true };
                 loadProfile(activeId);
             }
