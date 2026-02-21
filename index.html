@@ -3,8 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Isle: Prime Elder Tracker</title>
+    <title>Prime Elder Tracker</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Importing Ancient/Stone style fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Playfair+Display:ital,wght@0,400;0,700;1,900&display=swap" rel="stylesheet">
     <style>
         body {
             background-color: #0a0c0f;
@@ -13,7 +15,14 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            font-family: 'Playfair Display', serif;
         }
+        
+        h1, h2, .dino-title {
+            font-family: 'Cinzel', serif;
+            letter-spacing: 0.15em;
+        }
+
         .main-content {
             flex: 1;
         }
@@ -84,7 +93,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-family: serif;
+            font-family: 'Cinzel', serif;
             text-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
         }
     </style>
@@ -103,7 +112,7 @@
                 <li>No personal information is collected.</li>
                 <li>If you clear your browser cache, your progress will be lost.</li>
             </ul>
-            <button onclick="acceptPrivacy()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl transition-all">
+            <button onclick="acceptPrivacy()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl transition-all dino-title">
                 I Understand
             </button>
         </div>
@@ -115,8 +124,8 @@
             <h2 class="text-[10px] font-bold uppercase tracking-widest text-emerald-500 mb-4">Edit Dino Nickname</h2>
             <input type="text" id="modal-nickname-input" placeholder="e.g. Alpha Male, Solo Run..." class="w-full rounded-lg p-3 text-sm text-emerald-400 font-bold outline-none border border-emerald-500/40 mb-6 bg-black/60">
             <div class="flex gap-3">
-                <button onclick="closeRenameModal()" class="flex-1 text-gray-400 hover:text-white text-xs font-bold uppercase py-2">Cancel</button>
-                <button onclick="saveNicknameFromModal()" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold uppercase py-2 rounded-lg transition-all">Save Name</button>
+                <button onclick="closeRenameModal()" class="flex-1 text-gray-400 hover:text-white text-xs font-bold uppercase py-2 dino-title">Cancel</button>
+                <button onclick="saveNicknameFromModal()" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold uppercase py-2 rounded-lg transition-all dino-title">Save Name</button>
             </div>
         </div>
     </div>
@@ -127,15 +136,15 @@
                 <img src="https://www.theisle-game.com/templates/yootheme/cache/8f/The-Isle-Skull-copy-8f195f17.webp" alt="The Isle Skull Logo" class="isle-logo">
                 <div class="hidden md:block h-12 w-px bg-emerald-500/30"></div>
                 <div>
-                    <h1 class="text-xl md:text-2xl font-bold text-emerald-500 tracking-widest uppercase leading-tight">Prime Elder Tracker</h1>
-                    <p class="text-gray-500 text-[10px] uppercase font-bold tracking-widest opacity-70">Complete all goals before 75% growth!</p>
+                    <h1 class="text-xl md:text-3xl font-black text-emerald-500 uppercase leading-tight">Prime Elder Tracker</h1>
+                    <p class="text-gray-500 text-[10px] uppercase font-bold tracking-[0.2em] opacity-80">Reach all goals before 75% growth</p>
                 </div>
             </div>
             
             <div class="flex items-center gap-3">
                 <div class="text-right hidden sm:block">
                     <span id="counter" class="text-2xl font-mono text-emerald-400">0/5</span>
-                    <p class="text-[10px] uppercase font-bold text-gray-500">Run Progress</p>
+                    <p class="text-[10px] uppercase font-bold text-gray-500 tracking-widest">Run Progress</p>
                 </div>
                 <!-- Profile Placeholder Box -->
                 <div id="dino-icon-placeholder" class="w-16 h-16 md:w-20 md:h-20 dino-avatar rounded-xl overflow-hidden shrink-0">
@@ -151,11 +160,11 @@
                 <div class="glass-panel rounded-2xl p-4">
                     <div class="flex items-center justify-between mb-3">
                         <h2 class="text-[10px] font-bold uppercase tracking-widest text-gray-500">Active Profile</h2>
-                        <button onclick="createNewProfile()" class="text-emerald-500 hover:text-emerald-400 text-[10px] font-bold uppercase transition-colors">+ New Dino</button>
+                        <button onclick="createNewProfile()" class="text-emerald-500 hover:text-emerald-400 text-[10px] font-bold uppercase transition-colors tracking-widest">+ New Dino</button>
                     </div>
                     
                     <div class="flex gap-2 mb-4">
-                        <select id="profile-select" onchange="switchProfile()" class="flex-1 rounded-lg p-2 text-sm text-emerald-400 outline-none">
+                        <select id="profile-select" onchange="switchProfile()" class="flex-1 rounded-lg p-2 text-sm text-emerald-400 outline-none font-bold">
                         </select>
                         <button onclick="openRenameModal()" class="p-2 bg-emerald-900/20 text-emerald-500 rounded-lg hover:bg-emerald-900/40 transition-colors" title="Rename Dino">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"/></svg>
@@ -167,7 +176,7 @@
 
                     <div class="space-y-3">
                         <div>
-                            <label class="block text-[10px] uppercase font-bold text-gray-500 mb-1 ml-1">Species</label>
+                            <label class="block text-[10px] uppercase font-bold text-gray-500 mb-1 ml-1 tracking-widest">Species</label>
                             <select id="dino-species" onchange="updateSpecies()" class="w-full rounded-lg p-2 text-sm text-white outline-none">
                                 <option value="" disabled>Select Species...</option>
                                 <optgroup label="Carnivores">
@@ -196,7 +205,7 @@
                             </select>
                         </div>
                         <div>
-                            <label class="block text-[10px] uppercase font-bold text-gray-500 mb-1 ml-1">Status & Server</label>
+                            <label class="block text-[10px] uppercase font-bold text-gray-500 mb-1 ml-1 tracking-widest">Status & Server</label>
                             <div class="flex gap-2">
                                 <select id="life-status" onchange="updateProgress()" class="flex-1 rounded-lg p-2 text-sm text-white outline-none">
                                     <option value="Alive">🟢 Alive</option>
@@ -208,7 +217,7 @@
                         </div>
                     </div>
                     
-                    <button id="manual-save-btn" onclick="manualSave()" class="w-full mt-4 flex items-center justify-center gap-2 bg-emerald-900/40 hover:bg-emerald-800/60 text-emerald-400 text-[10px] font-bold uppercase tracking-widest py-2.5 rounded-xl border border-emerald-500/20 transition-all duration-300">
+                    <button id="manual-save-btn" onclick="manualSave()" class="w-full mt-4 flex items-center justify-center gap-2 bg-emerald-900/40 hover:bg-emerald-800/60 text-emerald-400 text-[10px] font-bold uppercase tracking-widest py-2.5 rounded-xl border border-emerald-500/20 transition-all duration-300 dino-title">
                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16"><path d="M11 2H9v3h2z"/><path d="M1.5 0h11.586a1.5 1.5 0 0 1 1.06.44l1.415 1.414A1.5 1.5 0 0 1 16 2.914V14.5a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 0 14.5v-13A1.5 1.5 0 0 1 1.5 0M1 1.5v13a.5.5 0 0 0 .5.5H2v-4.5A1.5 1.5 0 0 1 3.5 9h9a1.5 1.5 0 0 1 1.5 1.5V15h.5a.5.5 0 0 0 .5-.5V2.914a.5.5 0 0 0-.146-.353l-1.415-1.415A.5.5 0 0 0 13.086 1H13v4.5A1.5 1.5 0 0 1 11.5 7h-7A1.5 1.5 0 0 1 3 5.5V1H1.5a.5.5 0 0 0-.5.5m3 4.5h7a.5.5 0 0 0 .5-.5V1H4v4.5a.5.5 0 0 0 .5.5M3 15h10v-4.5a.5.5 0 0 0-.5-.5h-9a.5.5 0 0 0-.5.5z"/></svg>
                         <span>Save to Browser</span>
                     </button>
@@ -217,8 +226,8 @@
                 <div class="glass-panel rounded-2xl p-4">
                     <h2 class="text-[10px] font-bold uppercase tracking-widest text-gray-500 mb-3 text-center">Spawn Type</h2>
                     <div class="flex p-1 bg-black/40 rounded-xl border border-gray-700/50">
-                        <button onclick="setSpawn('spawned')" id="btn-spawned" class="flex-1 py-1.5 text-xs font-bold rounded-lg transition-all duration-200 uppercase">Spawn</button>
-                        <button onclick="setSpawn('hatched')" id="btn-hatched" class="flex-1 py-1.5 text-xs font-bold rounded-lg transition-all duration-200 uppercase">Hatch</button>
+                        <button onclick="setSpawn('spawned')" id="btn-spawned" class="flex-1 py-1.5 text-xs font-bold rounded-lg transition-all duration-200 uppercase dino-title">Spawn</button>
+                        <button onclick="setSpawn('hatched')" id="btn-hatched" class="flex-1 py-1.5 text-xs font-bold rounded-lg transition-all duration-200 uppercase dino-title">Hatch</button>
                     </div>
                 </div>
 
@@ -226,9 +235,9 @@
                     <div class="w-full bg-gray-800 rounded-full h-3 overflow-hidden border border-gray-700 mb-2">
                         <div id="progress-bar" class="h-full bg-emerald-500 transition-all duration-500 ease-out w-0 progress-glow"></div>
                     </div>
-                    <p id="status-msg" class="text-center text-[11px] font-bold uppercase tracking-wider text-gray-500">Select objectives...</p>
+                    <p id="status-msg" class="text-center text-[11px] font-bold uppercase tracking-[0.2em] text-gray-500 dino-title">Select objectives...</p>
                     
-                    <button onclick="resetCurrentProfile()" class="w-full mt-4 text-red-900/60 hover:text-red-500 transition-colors uppercase tracking-widest font-bold text-[9px] py-1 border border-red-900/20 rounded-lg">Reset Progress</button>
+                    <button onclick="resetCurrentProfile()" class="w-full mt-4 text-red-900/60 hover:text-red-500 transition-colors uppercase tracking-[0.3em] font-bold text-[9px] py-1 border border-red-900/20 rounded-lg dino-title">Reset Progress</button>
                 </div>
             </div>
 
@@ -251,10 +260,10 @@
                                             <input type="checkbox" id="migration-check" class="checkbox-custom rounded border-gray-600 bg-gray-700 pointer-events-none opacity-50">
                                         </div>
                                         <div class="ml-3 flex-1">
-                                            <span class="block text-sm font-bold text-gray-200">Migration Goals (2)</span>
+                                            <span class="block text-sm font-bold text-gray-200 dino-title tracking-wider">Migration Goals (2)</span>
                                             <div class="mt-2 flex items-center gap-3">
                                                 <input type="number" id="mz-count" value="0" min="0" max="10" onchange="updateProgress()" class="bg-black/40 border border-gray-700 text-emerald-400 font-mono text-lg w-14 rounded-lg p-1 text-center outline-none">
-                                                <span class="text-[10px] text-gray-500 font-bold uppercase">Zones Visited</span>
+                                                <span class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Zones Visited</span>
                                             </div>
                                         </div>
                                     </div>
@@ -265,10 +274,10 @@
                                             <input type="checkbox" id="patrol-check" class="checkbox-custom rounded border-gray-600 bg-gray-700 pointer-events-none opacity-50">
                                         </div>
                                         <div class="ml-3 flex-1">
-                                            <span class="block text-sm font-bold text-gray-200">Patrol Goals (4)</span>
+                                            <span class="block text-sm font-bold text-gray-200 dino-title tracking-wider">Patrol Goals (4)</span>
                                             <div class="mt-2 flex items-center gap-3">
                                                 <input type="number" id="pz-count" value="0" min="0" max="10" onchange="updateProgress()" class="bg-black/40 border border-gray-700 text-emerald-400 font-mono text-lg w-14 rounded-lg p-1 text-center outline-none">
-                                                <span class="text-[10px] text-gray-500 font-bold uppercase">Zones Visited</span>
+                                                <span class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Zones Visited</span>
                                             </div>
                                         </div>
                                     </div>
@@ -295,8 +304,10 @@
 
             <!-- Social Links -->
             <div class="flex justify-center gap-6 order-1 md:order-2">
-                <a href="https://x.com/PeinfulZ" target="_blank" class="social-icon" title="Twitter">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path></svg>
+                <a href="https://x.com/PeinfulZ" target="_blank" class="social-icon" title="X (Twitter)">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M12.6.75h2.454l-5.36 6.142L16 15.25h-4.937l-3.867-5.07-4.425 5.07H.316l5.733-6.57L0 .75h5.063l3.495 4.633L12.601.75Zm-.86 13.028h1.36L4.323 2.145H2.865l8.875 11.633Z"/>
+                    </svg>
                 </a>
                 <a href="https://www.twitch.tv/PeinfulZ" target="_blank" class="social-icon" title="Twitch">
                     <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2H3v16h5v4l4-4h5l4-4V2zm-10 9V7m5 4V7"></path></svg>
@@ -305,7 +316,9 @@
                     <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z"></path><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"></polygon></svg>
                 </a>
                 <a href="https://discord.gg/p345CKHdCF" target="_blank" class="social-icon" title="Discord">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="12" r="1"></circle><circle cx="15" cy="12" r="1"></circle><path d="M9 17c1 1 3 1 4 0"></path><path d="M22 12c0 5.5-4.5 10-10 10S2 17.5 2 12 6.5 2 12 2s10 4.5 10 10z"></path></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M13.545 2.907a13.227 13.227 0 0 0-3.257-1.011.05.05 0 0 0-.052.025c-.141.25-.297.577-.406.833a12.19 12.19 0 0 0-3.658 0 8.258 8.258 0 0 0-.412-.833.051.051 0 0 0-.052-.025c-1.125.194-2.22.534-3.257 1.011a.041.041 0 0 0-.021.018C.356 6.024-.213 9.047.066 12.032c.001.014.01.028.021.037a13.276 13.276 0 0 0 3.995 2.02.05.05 0 0 0 .056-.019c.308-.42.582-.863.818-1.329a.05.05 0 0 0-.01-.059.051.051 0 0 0-.018-.011 8.875 8.875 0 0 1-1.248-.595.05.05 0 0 1-.02-.066.051.051 0 0 1 .015-.019c.084-.063.168-.129.248-.195a.05.05 0 0 1 .051-.007c2.619 1.196 5.454 1.196 8.041 0a.052.052 0 0 1 .053.007c.08.066.164.132.248.195a.051.051 0 0 1-.004.085 8.254 8.254 0 0 1-1.249.594.05.05 0 0 0-.03.03.052.052 0 0 0 .003.041c.24.465.515.909.817 1.329a.05.05 0 0 0 .056.019 13.235 13.235 0 0 0 4.001-2.02.049.049 0 0 0 .021-.037c.334-3.451-.559-6.449-2.366-9.106a.034.034 0 0 0-.02-.019Zm-8.198 7.307c-.789 0-1.438-.724-1.438-1.612 0-.889.637-1.613 1.438-1.613.807 0 1.45.73 1.438 1.613 0 .888-.637 1.612-1.438 1.612Zm5.316 0c-.788 0-1.438-.724-1.438-1.612 0-.889.637-1.613 1.438-1.613.807 0 1.451.73 1.438 1.613 0 .888-.631 1.612-1.438 1.612Z"/>
+                    </svg>
                 </a>
             </div>
 
@@ -328,8 +341,23 @@
             { id: 'mass', text: 'Mass Migration', sub: 'Visit primary zone.' }
         ];
 
+        // Default profile template
+        const createDefaultProfileData = (species = 'Pachycephalosaurus') => ({
+            name: species, 
+            nickname: '', 
+            spawnType: 'spawned', 
+            mz: 0, 
+            pz: 0, 
+            server: '', 
+            status: 'Alive', 
+            checks: {
+                'infertility': true, // Automatically checked by default
+                'spasms': true       // Automatically checked by default
+            }
+        });
+
         let profiles = JSON.parse(localStorage.getItem('isle_elder_profiles_v10')) || {
-            'default': { name: 'Pachycephalosaurus', nickname: '', spawnType: 'spawned', mz: 0, pz: 0, server: '', status: 'Alive', checks: {} }
+            'default': createDefaultProfileData()
         };
         let activeId = localStorage.getItem('isle_elder_active_id_v10') || 'default';
 
@@ -353,7 +381,7 @@
             const originalContent = btn.innerHTML;
             btn.innerHTML = `
                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16"><path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z"/></svg>
-                <span>Profile Saved!</span>
+                <span>Saved!</span>
             `;
             btn.classList.replace('bg-emerald-900/40', 'bg-emerald-600');
             btn.classList.replace('text-emerald-400', 'text-white');
@@ -409,8 +437,8 @@
                             <input type="checkbox" id="${obj.id}" class="checkbox-custom rounded border-gray-600 bg-gray-700" onchange="updateProgress()">
                         </div>
                         <div class="ml-3">
-                            <span class="block text-sm font-bold text-gray-200 group-hover:text-emerald-400 transition-colors">${obj.text}</span>
-                            <span class="block text-[10px] text-gray-500 uppercase font-medium tracking-tight">${obj.sub}</span>
+                            <span class="block text-sm font-bold text-gray-200 group-hover:text-emerald-400 transition-colors dino-title tracking-widest">${obj.text}</span>
+                            <span class="block text-[10px] text-gray-500 uppercase font-medium tracking-widest">${obj.sub}</span>
                         </div>
                     </label>
                 `;
@@ -427,7 +455,7 @@
         function createNewProfile() {
             const species = document.getElementById('dino-species').value || "Pachycephalosaurus";
             const id = 'p_' + Date.now();
-            profiles[id] = { name: species, nickname: '', spawnType: 'spawned', mz: 0, pz: 0, server: '', status: 'Alive', checks: {} };
+            profiles[id] = createDefaultProfileData(species);
             activeId = id;
             saveAll();
             renderProfileList();
@@ -462,12 +490,12 @@
             
             if (type === 'hatched') {
                 hiddenGroup.classList.add('hidden-objective');
-                hatchedBtn.className = "flex-1 py-1.5 text-xs font-bold rounded-lg bg-emerald-600 text-white shadow-lg uppercase";
-                spawnedBtn.className = "flex-1 py-1.5 text-xs font-bold rounded-lg text-gray-500 hover:text-gray-300 uppercase";
+                hatchedBtn.className = "flex-1 py-1.5 text-xs font-bold rounded-lg bg-emerald-600 text-white shadow-lg uppercase dino-title tracking-widest";
+                spawnedBtn.className = "flex-1 py-1.5 text-xs font-bold rounded-lg text-gray-500 hover:text-gray-300 uppercase dino-title tracking-widest";
             } else {
                 hiddenGroup.classList.remove('hidden-objective');
-                spawnedBtn.className = "flex-1 py-1.5 text-xs font-bold rounded-lg bg-emerald-600 text-white shadow-lg uppercase";
-                hatchedBtn.className = "flex-1 py-1.5 text-xs font-bold rounded-lg text-gray-500 hover:text-gray-300 uppercase";
+                spawnedBtn.className = "flex-1 py-1.5 text-xs font-bold rounded-lg bg-emerald-600 text-white shadow-lg uppercase dino-title tracking-widest";
+                hatchedBtn.className = "flex-1 py-1.5 text-xs font-bold rounded-lg text-gray-500 hover:text-gray-300 uppercase dino-title tracking-widest";
             }
             updateProgress();
         }
@@ -498,7 +526,7 @@
                 statusMsg.innerText = checkedCount >= 5 ? "ELDER ELIGIBLE!" : `Need ${Math.max(0, 5 - checkedCount)} More`;
             }
             
-            statusMsg.className = checkedCount >= 5 ? "text-center text-[11px] font-bold uppercase tracking-widest text-emerald-400 animate-pulse" : "text-center text-[11px] font-bold uppercase tracking-wider text-gray-500";
+            statusMsg.className = checkedCount >= 5 ? "text-center text-[11px] font-bold uppercase tracking-[0.3em] text-emerald-400 animate-pulse dino-title" : "text-center text-[11px] font-bold uppercase tracking-[0.2em] text-gray-500 dino-title";
             saveCurrentState();
         }
 
@@ -516,6 +544,7 @@
                 }
             });
             setSpawn(p.spawnType || 'spawned');
+            updateProgress();
         }
 
         function saveCurrentState() {
@@ -541,9 +570,8 @@
             if(confirm("Clear progress for this dino?")) {
                 profiles[activeId].mz = 0;
                 profiles[activeId].pz = 0;
-                profiles[activeId].checks = {};
+                profiles[activeId].checks = { 'infertility': true, 'spasms': true };
                 loadProfile(activeId);
-                updateProgress();
             }
         }
 
