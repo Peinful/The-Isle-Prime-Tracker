@@ -41,7 +41,7 @@
             box-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
         }
         
-        /* Styled Dropdowns specifically */
+        /* Styled Dropdowns */
         select {
             background: rgba(0, 0, 0, 0.6) !important;
             border: 1px solid rgba(16, 185, 129, 0.3) !important;
@@ -57,7 +57,7 @@
         }
         
         /* Styled Text Inputs */
-        input[type="text"], input[type="number"] {
+        input[type="text"] {
             background: rgba(0, 0, 0, 0.6) !important;
             border: 1px solid rgba(16, 185, 129, 0.3) !important;
             color: #10b981 !important;
@@ -66,14 +66,24 @@
             transition: border-color 0.2s;
         }
 
-        input[type="text"]:focus, input[type="number"]:focus {
+        input[type="text"]:focus {
             border-color: #10b981 !important;
         }
 
-        select option {
-            background-color: #0a0c0f;
+        /* Number Button Group Styles */
+        .num-btn {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(75, 85, 99, 0.4);
+            color: #4b5563;
+            transition: all 0.2s ease;
+            font-family: 'Cinzel', serif;
+            font-weight: bold;
+        }
+        .num-btn.active {
+            background: rgba(16, 185, 129, 0.2);
+            border-color: #10b981;
             color: #10b981;
-            font-family: sans-serif;
+            box-shadow: 0 0 10px rgba(16, 185, 129, 0.2);
         }
 
         .hidden-objective {
@@ -280,30 +290,36 @@
                                 <div id="item-mass"></div>
                             </div>
                             <div class="divide-y divide-gray-700/50">
+                                <!-- Migration Row -->
                                 <div class="p-4 bg-white/5">
                                     <div class="flex items-start">
                                         <div class="pt-1">
                                             <input type="checkbox" id="migration-check" class="checkbox-custom rounded border-gray-600 bg-gray-700 pointer-events-none opacity-50">
                                         </div>
                                         <div class="ml-3 flex-1">
-                                            <span class="block text-sm font-bold text-gray-200 dino-title tracking-wider">Migration Goals (2)</span>
-                                            <div class="mt-2 flex items-center gap-3">
-                                                <input type="number" id="mz-count" value="0" min="0" max="10" onchange="updateProgress()" class="w-14 rounded-lg p-1 text-center">
-                                                <span class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Zones Visited</span>
+                                            <span class="block text-sm font-bold text-gray-200 dino-title tracking-wider">Migration Goals (2 Required)</span>
+                                            <div id="mz-selector" class="mt-2 flex items-center gap-2">
+                                                <button onclick="setZoneCount('mz', 0)" class="num-btn px-2.5 py-1 text-xs rounded border active" data-val="0">0</button>
+                                                <button onclick="setZoneCount('mz', 1)" class="num-btn px-2.5 py-1 text-xs rounded border" data-val="1">1</button>
+                                                <button onclick="setZoneCount('mz', 2)" class="num-btn px-2.5 py-1 text-xs rounded border" data-val="2">2</button>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
+                                <!-- Patrol Row -->
                                 <div class="p-4 bg-white/5">
                                     <div class="flex items-start">
                                         <div class="pt-1">
                                             <input type="checkbox" id="patrol-check" class="checkbox-custom rounded border-gray-600 bg-gray-700 pointer-events-none opacity-50">
                                         </div>
                                         <div class="ml-3 flex-1">
-                                            <span class="block text-sm font-bold text-gray-200 dino-title tracking-wider">Patrol Goals (4)</span>
-                                            <div class="mt-2 flex items-center gap-3">
-                                                <input type="number" id="pz-count" value="0" min="0" max="10" onchange="updateProgress()" class="w-14 rounded-lg p-1 text-center">
-                                                <span class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Zones Visited</span>
+                                            <span class="block text-sm font-bold text-gray-200 dino-title tracking-wider">Patrol Goals (4 Required)</span>
+                                            <div id="pz-selector" class="mt-2 flex items-center gap-2">
+                                                <button onclick="setZoneCount('pz', 0)" class="num-btn px-2.5 py-1 text-xs rounded border active" data-val="0">0</button>
+                                                <button onclick="setZoneCount('pz', 1)" class="num-btn px-2.5 py-1 text-xs rounded border" data-val="1">1</button>
+                                                <button onclick="setZoneCount('pz', 2)" class="num-btn px-2.5 py-1 text-xs rounded border" data-val="2">2</button>
+                                                <button onclick="setZoneCount('pz', 3)" class="num-btn px-2.5 py-1 text-xs rounded border" data-val="3">3</button>
+                                                <button onclick="setZoneCount('pz', 4)" class="num-btn px-2.5 py-1 text-xs rounded border" data-val="4">4</button>
                                             </div>
                                         </div>
                                     </div>
@@ -374,10 +390,10 @@
             }
         });
 
-        let profiles = JSON.parse(localStorage.getItem('isle_elder_profiles_v12')) || {
+        let profiles = JSON.parse(localStorage.getItem('isle_elder_profiles_v13')) || {
             'default': createDefaultProfileData()
         };
-        let activeId = localStorage.getItem('isle_elder_active_id_v12') || 'default';
+        let activeId = localStorage.getItem('isle_elder_active_id_v13') || 'default';
 
         function init() {
             if (!localStorage.getItem('privacy_accepted')) {
@@ -462,7 +478,7 @@
         function switchProfile() {
             saveCurrentState();
             activeId = document.getElementById('profile-select').value;
-            localStorage.setItem('isle_elder_active_id_v12', activeId);
+            localStorage.setItem('isle_elder_active_id_v13', activeId);
             loadProfile(activeId);
         }
 
@@ -470,131 +486,4 @@
             const species = document.getElementById('dino-species').value || "Pachycephalosaurus";
             const id = 'p_' + Date.now();
             profiles[id] = createDefaultProfileData(species);
-            activeId = id;
-            saveAll();
-            renderProfileList();
-            loadProfile(id);
-            openRenameModal();
-        }
-
-        function updateSpecies() {
-            const species = document.getElementById('dino-species').value;
-            profiles[activeId].name = species;
-            updateDinoPlaceholder(species);
-            saveAll();
-            renderProfileList();
-        }
-
-        function deleteCurrentProfile() {
-            if (Object.keys(profiles).length <= 1) return;
-            if (confirm(`Delete profile?`)) {
-                delete profiles[activeId];
-                activeId = Object.keys(profiles)[0];
-                saveAll();
-                renderProfileList();
-                loadProfile(activeId);
-            }
-        }
-
-        function setSpawn(type) {
-            profiles[activeId].spawnType = type;
-            const spawnedBtn = document.getElementById('btn-spawned');
-            const hatchedBtn = document.getElementById('btn-hatched');
-            const hiddenGroup = document.getElementById('hatched-hidden-group');
-            
-            if (type === 'hatched') {
-                hiddenGroup.classList.add('hidden-objective');
-                hatchedBtn.className = "flex-1 py-1.5 text-xs font-bold rounded-lg bg-emerald-600 text-white shadow-lg uppercase dino-title tracking-widest";
-                spawnedBtn.className = "flex-1 py-1.5 text-xs font-bold rounded-lg text-gray-500 hover:text-gray-300 uppercase dino-title tracking-widest";
-            } else {
-                hiddenGroup.classList.remove('hidden-objective');
-                spawnedBtn.className = "flex-1 py-1.5 text-xs font-bold rounded-lg bg-emerald-600 text-white shadow-lg uppercase dino-title tracking-widest";
-                hatchedBtn.className = "flex-1 py-1.5 text-xs font-bold rounded-lg text-gray-500 hover:text-gray-300 uppercase dino-title tracking-widest";
-            }
-            updateProgress();
-        }
-
-        function updateProgress() {
-            const isHatched = profiles[activeId].spawnType === 'hatched';
-            const mz = parseInt(document.getElementById('mz-count').value) || 0;
-            const pz = parseInt(document.getElementById('pz-count').value) || 0;
-            
-            document.getElementById('migration-check').checked = (mz >= 2);
-            document.getElementById('patrol-check').checked = (pz >= 4);
-
-            let checkedCount = 0;
-            const statusMsg = document.getElementById('status-msg');
-
-            if (isHatched) {
-                const sancChecked = document.getElementById('sanctuary').checked;
-                checkedCount = sancChecked ? 5 : 0;
-                document.getElementById('counter').innerText = sancChecked ? "1/1" : "0/1";
-                document.getElementById('progress-bar').style.width = sancChecked ? "100%" : "0%";
-                statusMsg.innerText = sancChecked ? "ELDER ELIGIBLE!" : "Visit Sanctuary.";
-            } else {
-                const checkboxes = document.querySelectorAll('#checklist-container input[type="checkbox"]');
-                checkedCount = Array.from(checkboxes).filter(i => i.checked).length;
-                const percent = Math.min((checkedCount / 5) * 100, 100);
-                document.getElementById('progress-bar').style.width = `${percent}%`;
-                document.getElementById('counter').innerText = `${checkedCount}/5`;
-                statusMsg.innerText = checkedCount >= 5 ? "ELDER ELIGIBLE!" : `Need ${Math.max(0, 5 - checkedCount)} More`;
-            }
-            
-            statusMsg.className = checkedCount >= 5 ? "text-center text-[11px] font-bold uppercase tracking-[0.3em] text-emerald-400 animate-pulse dino-title" : "text-center text-[11px] font-bold uppercase tracking-[0.2em] text-gray-500 dino-title";
-            saveCurrentState();
-        }
-
-        function loadProfile(id) {
-            const p = profiles[id];
-            document.getElementById('mz-count').value = p.mz || 0;
-            document.getElementById('pz-count').value = p.pz || 0;
-            document.getElementById('server-name').value = p.server || '';
-            document.getElementById('life-status').value = p.status || 'Alive';
-            document.getElementById('dino-species').value = p.name;
-            updateDinoPlaceholder(p.name);
-
-            document.querySelectorAll('#checklist-container input[type="checkbox"]').forEach(cb => {
-                if (cb.id !== 'migration-check' && cb.id !== 'patrol-check') {
-                    const isMandatoryDefault = (cb.id === 'infertility' || cb.id === 'spasms');
-                    cb.checked = p.checks.hasOwnProperty(cb.id) ? p.checks[cb.id] : isMandatoryDefault;
-                }
-            });
-
-            setSpawn(p.spawnType || 'spawned');
-            updateProgress();
-        }
-
-        function saveCurrentState() {
-            const p = profiles[activeId];
-            p.mz = document.getElementById('mz-count').value;
-            p.pz = document.getElementById('pz-count').value;
-            p.server = document.getElementById('server-name').value;
-            p.status = document.getElementById('life-status').value;
-            p.name = document.getElementById('dino-species').value;
-            p.checks = {};
-            document.querySelectorAll('#checklist-container input[type="checkbox"]').forEach(cb => {
-                if (cb.id !== 'migration-check' && cb.id !== 'patrol-check') {
-                    p.checks[cb.id] = cb.checked;
-                }
-            });
-            saveAll();
-        }
-
-        function saveAll() {
-            localStorage.setItem('isle_elder_profiles_v12', JSON.stringify(profiles));
-            localStorage.setItem('isle_elder_active_id_v12', activeId);
-        }
-
-        function resetCurrentProfile() {
-            if(confirm("Clear progress for this dino?")) {
-                profiles[activeId].mz = 0;
-                profiles[activeId].pz = 0;
-                profiles[activeId].checks = { 'infertility': true, 'spasms': true };
-                loadProfile(activeId);
-            }
-        }
-
-        window.onload = init;
-    </script>
-</body>
-</html>
+            activeId = id
