@@ -80,7 +80,7 @@
             border: 1px solid #10b98144;
             border-radius: 0.75rem;
             z-index: 100; 
-            max-height: 300px;
+            max-height: 350px;
             overflow-y: auto;
             display: none;
             box-shadow: 0 20px 40px rgba(0,0,0,0.9);
@@ -298,37 +298,38 @@
                     <div class="flex gap-2 mb-8">
                         <button onclick="openRenameModal()" class="flex-1 py-3 bg-emerald-900/10 text-emerald-500 rounded-xl border border-emerald-500/20 hover:bg-emerald-900/30 transition-all font-black uppercase text-[10px] tracking-widest">Rename</button>
                         <button onclick="deleteCurrentProfile()" class="px-4 bg-red-900/10 text-red-500 rounded-xl border border-red-500/20 hover:bg-red-900/30 transition-all">
-                            <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/><path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118z"/></svg>
+                            <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/><path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 1 1-1V4.059L11.882 4H4.118z"/></svg>
                         </button>
                     </div>
 
                     <div class="space-y-4">
                         <div class="custom-dropdown" id="species-dropdown">
-                            <label class="block text-[9px] font-black uppercase tracking-[0.3em] text-gray-600 mb-2 ml-1">Species Selection</label>
+                            <label class="block text-[9px] font-black uppercase tracking-[0.3em] text-gray-600 mb-2 ml-1">Evrima Species Selection</label>
                             <div class="dropdown-trigger" onclick="toggleDropdown('species-options')">
                                 <span id="selected-species-label">Pachycephalosaurus</span>
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                             </div>
                             <div class="dropdown-options" id="species-options">
                                 <div class="option-group-label">Carnivores</div>
+                                <div class="option-item" onclick="selectSpecies('Omniraptor')">Omniraptor</div>
+                                <div class="option-item" onclick="selectSpecies('Carnotaurus')">Carnotaurus</div>
                                 <div class="option-item" onclick="selectSpecies('Ceratosaurus')">Ceratosaurus</div>
-                                <div class="option-item" onclick="selectSpecies('Deinosuchus')">Deinosuchus</div>
                                 <div class="option-item" onclick="selectSpecies('Dilophosaurus')">Dilophosaurus</div>
                                 <div class="option-item" onclick="selectSpecies('Herrerasaurus')">Herrerasaurus</div>
-                                <div class="option-item" onclick="selectSpecies('Omniraptor')">Omniraptor</div>
-                                <div class="option-item" onclick="selectSpecies('Tyrannosaurus')">T-Rex</div>
                                 <div class="option-item" onclick="selectSpecies('Troodon')">Troodon</div>
-                                <div class="option-item" onclick="selectSpecies('Austroraptor')">Austroraptor</div>
-                                <div class="option-item" onclick="selectSpecies('Baryonyx')">Baryonyx</div>
+                                <div class="option-item" onclick="selectSpecies('Deinosuchus')">Deinosuchus</div>
+                                <div class="option-item" onclick="selectSpecies('Pteranodon')">Pteranodon</div>
+                                <div class="option-item" onclick="selectSpecies('Allosaurus')">Allosaurus</div>
+                                <div class="option-item" onclick="selectSpecies('Tyrannosaur')">Tyrannosaur</div>
                                 
                                 <div class="option-group-label">Herbivores</div>
-                                <div class="option-item" onclick="selectSpecies('Diabloceratops')">Diabloceratops</div>
-                                <div class="option-item" onclick="selectSpecies('Dryosaurus')">Dryosaurus</div>
-                                <div class="option-item" onclick="selectSpecies('Hypsilophodon')">Hypsilophodon</div>
-                                <div class="option-item" onclick="selectSpecies('Maip')">Maip</div>
-                                <div class="option-item" onclick="selectSpecies('Pachycephalosaurus')">Pachycephalosaurus</div>
                                 <div class="option-item" onclick="selectSpecies('Stegosaurus')">Stegosaurus</div>
+                                <div class="option-item" onclick="selectSpecies('Dryosaurus')">Dryosaurus</div>
                                 <div class="option-item" onclick="selectSpecies('Tenontosaurus')">Tenontosaurus</div>
+                                <div class="option-item" onclick="selectSpecies('Hypsilophodon')">Hypsilophodon</div>
+                                <div class="option-item" onclick="selectSpecies('Pachycephalosaurus')">Pachycephalosaurus</div>
+                                <div class="option-item" onclick="selectSpecies('Diabloceratops')">Diabloceratops</div>
+                                <div class="option-item" onclick="selectSpecies('Maiasaura')">Maiasaura</div>
                                 <div class="option-item" onclick="selectSpecies('Triceratops')">Triceratops</div>
                                 
                                 <div class="option-group-label">Omnivores</div>
