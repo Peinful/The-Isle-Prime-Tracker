@@ -44,7 +44,6 @@
             user-select: none;
         }
 
-        /* Tiered Z-indexing for dropdowns to prevent overlapping */
         #profile-dropdown { z-index: 60; }
         #species-dropdown { z-index: 50; }
         #status-dropdown-container { z-index: 40; }
@@ -110,6 +109,9 @@
             cursor: pointer;
             transition: all 0.2s;
             color: #9ca3af;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         .option-item:hover {
@@ -118,7 +120,11 @@
             padding-left: 1.25rem;
         }
 
-        /* --- Buttons & Inputs --- */
+        /* --- Status Emoji Colors --- */
+        .status-alive { color: #00ff00; }
+        .status-dead { color: #ff0000; }
+        .status-stored { color: #ffff00; }
+
         .num-btn {
             background: rgba(255, 255, 255, 0.03);
             border: 1px solid rgba(75, 85, 99, 0.3);
@@ -346,9 +352,9 @@
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                                 </div>
                                 <div class="dropdown-options" id="status-options">
-                                    <div class="option-item" onclick="selectStatus('Alive')">Alive</div>
-                                    <div class="option-item" onclick="selectStatus('Dead')">Dead</div>
-                                    <div class="option-item" onclick="selectStatus('Stored')">Stored</div>
+                                    <div class="option-item" onclick="selectStatus('Alive')"><span class="status-alive">✅</span> Alive</div>
+                                    <div class="option-item" onclick="selectStatus('Dead')"><span class="status-dead">💀</span> Dead</div>
+                                    <div class="option-item" onclick="selectStatus('Stored')"><span class="status-stored">📦</span> Stored</div>
                                 </div>
                             </div>
                             <div>
@@ -483,9 +489,22 @@
             { id: 'mass', text: 'Visit a Mass Migration Zone', sub: 'A specific zone type; often part of the 2 MZ requirement.' }
         ];
 
+        const statusMap = {
+            'Alive': '<span class="status-alive">✅</span> Alive',
+            'Dead': '<span class="status-dead">💀</span> Dead',
+            'Stored': '<span class="status-stored">📦</span> Stored'
+        };
+
+        const statusEmojiMap = {
+            'Alive': '✅',
+            'Dead': '💀',
+            'Stored': '📦'
+        };
+
         const createDefaultProfileData = (species = 'Pachycephalosaurus') => ({
             name: species, nickname: '', spawnType: 'spawned', mz: 0, pz: 0, server: '', status: 'Alive', 
-            checks: { 'infertility': true, 'spasms': true }
+            checks: { 'infertility': true, 'spasms': true },
+            completed: false
         });
 
         let profiles = JSON.parse(localStorage.getItem('isle_v14')) || { 'default': createDefaultProfileData() };
@@ -494,8 +513,8 @@
         function init() {
             if (!localStorage.getItem('privacy_accepted')) document.getElementById('privacy-modal').style.display = 'flex';
             renderChecklist();
-            renderProfileOptions();
             loadProfile(activeId);
+            renderProfileOptions();
             
             window.addEventListener('click', (e) => {
                 if (!e.target.closest('.custom-dropdown')) {
@@ -515,8 +534,18 @@
             const container = document.getElementById('profile-options');
             container.innerHTML = Object.keys(profiles).map(id => {
                 const p = profiles[id];
-                const display = p.nickname ? `${p.nickname} (${p.name})` : p.name;
-                return `<div class="option-item" onclick="selectProfile('${id}')">${display}</div>`;
+                const displayName = p.nickname ? `${p.nickname} (${p.name})` : p.name;
+                const emoji = statusEmojiMap[p.status || 'Alive'] || '';
+                const serverSuffix = p.server ? ` • ${p.server}` : '';
+                const primedSuffix = p.completed ? ' • <span class="text-emerald-400 font-black">PRIMED</span>' : '';
+                
+                return `
+                    <div class="option-item" onclick="selectProfile('${id}')">
+                        <span>${displayName}</span>
+                        <div class="text-[10px] opacity-70 ml-2 font-black uppercase tracking-widest text-right">
+                            ${emoji}${serverSuffix}${primedSuffix}
+                        </div>
+                    </div>`;
             }).join('');
         }
 
@@ -525,6 +554,7 @@
             activeId = id;
             loadProfile(id);
             document.getElementById('profile-options').classList.remove('show');
+            renderProfileOptions();
         }
 
         function selectSpecies(name) {
@@ -537,16 +567,20 @@
 
         function selectStatus(status) {
             profiles[activeId].status = status;
-            document.getElementById('selected-status-label').innerText = status;
+            document.getElementById('selected-status-label').innerHTML = statusMap[status] || status;
             document.getElementById('status-options').classList.remove('show');
             saveCurrentState();
+            renderProfileOptions();
         }
 
         function loadProfile(id) {
             const p = profiles[id];
             document.getElementById('selected-profile-label').innerText = p.nickname ? p.nickname : p.name;
             document.getElementById('selected-species-label').innerText = p.name;
-            document.getElementById('selected-status-label').innerText = p.status || 'Alive';
+            
+            const currentStatus = p.status || 'Alive';
+            document.getElementById('selected-status-label').innerHTML = statusMap[currentStatus] || currentStatus;
+            
             document.getElementById('server-name').value = p.server || '';
             setZoneCount('mz', p.mz || 0);
             setZoneCount('pz', p.pz || 0);
@@ -605,8 +639,11 @@
             const pct = (displayCount / 5) * 100;
             document.getElementById('progress-bar').style.width = `${pct}%`;
             
+            // Mark as completed if count hits 5
+            p.completed = displayCount >= 5;
+
             const msg = document.getElementById('status-msg');
-            if (displayCount >= 5) {
+            if (p.completed) {
                 msg.innerText = "Elder Status Attained";
                 msg.className = "text-center text-[10px] font-black uppercase tracking-[0.3em] text-emerald-400 animate-pulse";
             } else {
@@ -643,6 +680,7 @@
             updateProgress();
         }
 
+        let inputTimeout;
         function saveCurrentState() {
             const p = profiles[activeId];
             p.server = document.getElementById('server-name').value;
@@ -652,6 +690,12 @@
                 if (cb) p.checks[obj.id] = cb.checked;
             });
             saveAll();
+            
+            // Re-render options with a small delay for input fields to avoid flickering
+            clearTimeout(inputTimeout);
+            inputTimeout = setTimeout(() => {
+                renderProfileOptions();
+            }, 500);
         }
 
         function createNewProfile() {
