@@ -37,7 +37,6 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
-        /* --- Custom Stone Dropdown Styling --- */
         .custom-dropdown {
             position: relative;
             width: 100%;
@@ -73,8 +72,7 @@
         .dropdown-options {
             position: absolute;
             top: calc(100% + 5px);
-            left: 0;
-            right: 0;
+            left: 0;right: 0;
             background: #111418;
             border: 1px solid #10b98144;
             border-radius: 0.75rem;
@@ -120,7 +118,6 @@
             padding-left: 1.25rem;
         }
 
-        /* --- Status Emoji Colors --- */
         .status-alive { color: #00ff00; }
         .status-dead { color: #ff0000; }
         .status-stored { color: #ffff00; }
@@ -222,19 +219,9 @@
             background: rgba(0,0,0,0.5);
         }
 
-        .social-link {
-            transition: all 0.3s;
-            opacity: 0.4;
-            color: white;
-        }
-        .social-link:hover {
-            opacity: 1;
-            color: #10b981;
-            transform: translateY(-3px);
-            filter: drop-shadow(0 0 8px rgba(16, 185, 129, 0.6));
-        }
-
         body.mode-hatched .spawn-normal-only { display: none; }
+        
+        .hidden-goal { display: none !important; }
     </style>
 </head>
 <body class="p-4 md:p-8 mode-spawned">
@@ -279,7 +266,7 @@
             <div class="flex items-center gap-6">
                 <div class="text-right">
                     <span id="counter" class="text-4xl font-black text-emerald-400 dino-title">0/5</span>
-                    <p class="text-[9px] uppercase font-black text-gray-600 tracking-[0.3em]">Core Objectives Met</p>
+                    <p id="counter-label" class="text-[9px] uppercase font-black text-gray-600 tracking-[0.3em]">Core Objectives Met</p>
                 </div>
             </div>
         </header>
@@ -391,32 +378,33 @@
                                 <div id="item-diet"></div>
                                 <div id="item-infertility"></div>
                                 <div id="item-spasms"></div>
-                                <div id="item-mass"></div>
+                                <div id="item-mass" class="standard-only"></div>
                             </div>
-                            <div class="divide-y divide-emerald-500/5">
+                            <div class="divide-y divide-emerald-500/5 standard-only">
                                 <div class="p-6 bg-emerald-500/[0.02]">
-                                    <div class="flex items-start gap-4">
-                                        <input type="checkbox" id="migration-check" class="checkbox-custom opacity-40 pointer-events-none">
-                                        <div class="flex-1">
-                                            <span class="block text-sm font-black text-gray-300 dino-title tracking-wider mb-3 uppercase">Visit Migration or Patrol Zones</span>
-                                            <div class="space-y-4">
-                                                <div>
-                                                    <p class="text-[9px] text-gray-500 font-bold uppercase tracking-widest mb-2">Migration Zones (2 req.)</p>
-                                                    <div id="mz-selector" class="flex gap-2">
-                                                        <button onclick="setZoneCount('mz', 0)" class="num-btn" data-val="0">0</button>
-                                                        <button onclick="setZoneCount('mz', 1)" class="num-btn" data-val="1">1</button>
-                                                        <button onclick="setZoneCount('mz', 2)" class="num-btn" data-val="2">2</button>
-                                                    </div>
+                                    <div class="flex flex-col gap-6 w-full">
+                                        <div class="flex items-start gap-4">
+                                            <input type="checkbox" id="migration-check" class="checkbox-custom opacity-40 pointer-events-none">
+                                            <div class="flex-1">
+                                                <span class="block text-sm font-black text-gray-300 dino-title tracking-wider mb-3 uppercase">Migration Zones (2 req.)</span>
+                                                <div id="mz-selector" class="flex gap-2">
+                                                    <button onclick="setZoneCount('mz', 0)" class="num-btn" data-val="0">0</button>
+                                                    <button onclick="setZoneCount('mz', 1)" class="num-btn" data-val="1">1</button>
+                                                    <button onclick="setZoneCount('mz', 2)" class="num-btn" data-val="2">2</button>
                                                 </div>
-                                                <div>
-                                                    <p class="text-[9px] text-gray-500 font-bold uppercase tracking-widest mb-2">Patrol Zones (4 req.)</p>
-                                                    <div id="pz-selector" class="flex gap-2">
-                                                        <button onclick="setZoneCount('pz', 0)" class="num-btn" data-val="0">0</button>
-                                                        <button onclick="setZoneCount('pz', 1)" class="num-btn" data-val="1">1</button>
-                                                        <button onclick="setZoneCount('pz', 2)" class="num-btn" data-val="2">2</button>
-                                                        <button onclick="setZoneCount('pz', 3)" class="num-btn" data-val="3">3</button>
-                                                        <button onclick="setZoneCount('pz', 4)" class="num-btn" data-val="4">4</button>
-                                                    </div>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-start gap-4">
+                                            <input type="checkbox" id="patrol-check" class="checkbox-custom opacity-40 pointer-events-none">
+                                            <div class="flex-1">
+                                                <span class="block text-sm font-black text-gray-300 dino-title tracking-wider mb-3 uppercase">Patrol Zones (5 req.)</span>
+                                                <div id="pz-selector" class="flex gap-2">
+                                                    <button onclick="setZoneCount('pz', 0)" class="num-btn" data-val="0">0</button>
+                                                    <button onclick="setZoneCount('pz', 1)" class="num-btn" data-val="1">1</button>
+                                                    <button onclick="setZoneCount('pz', 2)" class="num-btn" data-val="2">2</button>
+                                                    <button onclick="setZoneCount('pz', 3)" class="num-btn" data-val="3">3</button>
+                                                    <button onclick="setZoneCount('pz', 4)" class="num-btn" data-val="4">4</button>
+                                                    <button onclick="setZoneCount('pz', 5)" class="num-btn" data-val="5">5</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -438,21 +426,6 @@
                 <div class="text-center md:text-left">
                     <p class="text-[12px] font-black uppercase tracking-[0.5em] text-emerald-500 mb-1">Trial of the Ancient Ones</p>
                     <p class="text-[10px] text-gray-500 font-bold tracking-widest uppercase mb-4">Crafted for the survivors of Evrima</p>
-                    
-                    <div class="flex justify-center md:justify-start gap-6 mt-4">
-                        <a href="https://discord.gg/p345CKHdCF" target="_blank" class="social-link" title="Discord">
-                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515a.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0a12.64 12.64 0 0 0-.617-1.25a.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057a19.9 19.9 0 0 0 5.993 3.03a.078.078 0 0 0 .084-.028a14.09 14.09 0 0 0 1.226-1.994a.076.076 0 0 0-.041-.106a13.107 13.107 0 0 1-1.872-.892a.077.077 0 0 1-.008-.128a10.2 10.2 0 0 0 .372-.292a.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127a12.299 12.299 0 0 1-1.873.892a.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028a19.839 19.839 0 0 0 6.002-3.03a.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.955-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42c0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.955-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42c0 1.333-.946 2.418-2.157 2.418z"/></svg>
-                        </a>
-                        <a href="https://x.com/PeinfulZ" target="_blank" class="social-link" title="Twitter/X">
-                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-                        </a>
-                        <a href="https://www.twitch.tv/PeinfulZ" target="_blank" class="social-link" title="Twitch">
-                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M2.149 0l-1.612 4.119v16.827h5.655v3.054l3.054-3.054h4.305l7.949-7.949v-13.003h-19.345zm17.605 12.01l-3.285 3.285h-4.452l-2.723 2.723v-2.723h-3.884v-13.561h14.344v10.276zm-2.956-6.398h-1.891v5.655h1.891v-5.655zm-5.042 0h-1.891v5.655h1.891v-5.655z"/></svg>
-                        </a>
-                        <a href="https://www.youtube.com/@PeinfulZ" target="_blank" class="social-link" title="YouTube">
-                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
-                        </a>
-                    </div>
                 </div>
 
                 <div class="flex items-center gap-12">
@@ -470,12 +443,6 @@
                     </div>
                 </div>
             </div>
-
-            <div class="pt-8 border-t border-gray-900 flex flex-col items-center">
-                <p class="text-[8px] text-gray-700 font-bold uppercase tracking-[0.3em] text-center max-w-3xl leading-relaxed">
-                    Disclaimer: This tool is an unofficial fan-made resource. All rights to "The Isle" belong to Afterthought LLC. This tracker does not interact with game files and is intended solely for personal progress monitoring.
-                </p>
-            </div>
         </div>
     </footer>
 
@@ -488,6 +455,8 @@
             { id: 'nest', text: 'Nest and raise a hatchling to 50%', sub: 'Requires cooperation if not solo.' },
             { id: 'mass', text: 'Visit a Mass Migration Zone', sub: 'A specific zone type; often part of the 2 MZ requirement.' }
         ];
+
+        const specificReqSpecies = ['Troodon', 'Hypsilophodon', 'Dryosaurus'];
 
         const statusMap = {
             'Alive': '<span class="status-alive">✅</span> Alive',
@@ -502,8 +471,14 @@
         };
 
         const createDefaultProfileData = (species = 'Pachycephalosaurus') => ({
-            name: species, nickname: '', spawnType: 'spawned', mz: 0, pz: 0, server: '', status: 'Alive', 
-            checks: { 'infertility': true, 'spasms': true },
+            name: species, 
+            nickname: '', 
+            spawnType: 'spawned', 
+            mz: 0, 
+            pz: 0, 
+            server: '', 
+            status: 'Alive', 
+            checks: { 'infertility': true, 'spasms': true }, 
             completed: false
         });
 
@@ -559,8 +534,14 @@
 
         function selectSpecies(name) {
             profiles[activeId].name = name;
+            
+            profiles[activeId].checks['infertility'] = true;
+            profiles[activeId].checks['spasms'] = true;
+
             document.getElementById('selected-species-label').innerText = name;
             document.getElementById('species-options').classList.remove('show');
+            
+            loadProfile(activeId);
             saveAll();
             renderProfileOptions();
         }
@@ -586,11 +567,39 @@
             setZoneCount('pz', p.pz || 0);
             setSpawn(p.spawnType);
             
+            p.checks['infertility'] = true;
+            p.checks['spasms'] = true;
+
             coreObjectives.forEach(obj => {
                 const cb = document.getElementById(obj.id);
-                if (cb) cb.checked = p.checks[obj.id] || false;
+                if (cb) {
+                    cb.checked = p.checks[obj.id] || false;
+                }
             });
+
+            handleSpeciesSpecificUI(p.name);
             updateProgress();
+        }
+
+        function handleSpeciesSpecificUI(speciesName) {
+            const p = profiles[activeId];
+            const isSpecific = specificReqSpecies.includes(speciesName);
+            const isHatched = p.spawnType === 'hatched';
+            const standardElements = document.querySelectorAll('.standard-only');
+            
+            standardElements.forEach(el => {
+                if (isSpecific || isHatched) el.classList.add('hidden-goal');
+                else el.classList.remove('hidden-goal');
+            });
+
+            const counterLabel = document.getElementById('counter-label');
+            if (isHatched) {
+                counterLabel.innerText = "Hatchling Trial Path";
+            } else if (isSpecific) {
+                counterLabel.innerText = "Specific Trials Met";
+            } else {
+                counterLabel.innerText = "Core Objectives Met";
+            }
         }
 
         function renderChecklist() {
@@ -612,39 +621,52 @@
         function updateProgress() {
             const p = profiles[activeId];
             const isHatched = p.spawnType === 'hatched';
+            const isSpecific = specificReqSpecies.includes(p.name);
             
             p.mz = parseInt(p.mz) || 0;
             p.pz = parseInt(p.pz) || 0;
             
-            const migrationMet = p.mz >= 2 || p.pz >= 4;
+            const migrationMet = p.mz >= 2;
+            const patrolMet = p.pz >= 5;
+            
             document.getElementById('migration-check').checked = migrationMet;
+            document.getElementById('patrol-check').checked = patrolMet;
+
+            document.getElementById('infertility').checked = true;
+            document.getElementById('spasms').checked = true;
 
             let count = 0;
-            if (isHatched) count++;
+            let totalPossible = 5;
 
-            coreObjectives.forEach(obj => {
-                const cb = document.getElementById(obj.id);
-                if (isHatched) {
-                    if (obj.id === 'sanctuary' && cb && cb.checked) count++;
-                } else {
+            if (isHatched) {
+                totalPossible = 1;
+                const sanctuaryChecked = document.getElementById('sanctuary').checked;
+                if (sanctuaryChecked) count = 1;
+            } else if (isSpecific) {
+                totalPossible = 2;
+                if (document.getElementById('sanctuary').checked) count++;
+                if (document.getElementById('diet').checked) count++;
+            } else {
+                totalPossible = 5;
+                coreObjectives.forEach(obj => {
+                    const cb = document.getElementById(obj.id);
                     if (cb && cb.checked) count++;
-                }
-            });
-            
-            if (!isHatched && migrationMet) count++;
+                });
+                if (migrationMet) count++;
+                if (patrolMet) count++;
+            }
 
-            const displayCount = Math.min(count, 5);
-            document.getElementById('counter').innerText = `${displayCount}/5`;
-            document.getElementById('footer-count').innerText = `${displayCount}/5`;
-            const pct = (displayCount / 5) * 100;
+            const displayCount = Math.min(count, totalPossible);
+            document.getElementById('counter').innerText = `${displayCount}/${totalPossible}`;
+            document.getElementById('footer-count').innerText = `${displayCount}/${totalPossible}`;
+            const pct = (displayCount / totalPossible) * 100;
             document.getElementById('progress-bar').style.width = `${pct}%`;
             
-            // Mark as completed if count hits 5
-            p.completed = displayCount >= 5;
+            p.completed = displayCount >= totalPossible;
 
             const msg = document.getElementById('status-msg');
             if (p.completed) {
-                msg.innerText = "Elder Status Attained";
+                msg.innerText = isHatched ? "Survivor of the Nest" : "Elder Status Attained";
                 msg.className = "text-center text-[10px] font-black uppercase tracking-[0.3em] text-emerald-400 animate-pulse";
             } else {
                 msg.innerText = "Growth Required";
@@ -668,15 +690,19 @@
                 spawnedBtn.className = "flex-1 py-3 text-[10px] font-black rounded-xl bg-emerald-600 text-black shadow-lg uppercase tracking-widest";
                 hatchedBtn.className = "flex-1 py-3 text-[10px] font-black rounded-xl text-gray-600 hover:text-gray-400 uppercase tracking-widest";
             }
+            
+            handleSpeciesSpecificUI(profiles[activeId].name);
             updateProgress();
         }
 
         function setZoneCount(type, val) {
             profiles[activeId][type] = val;
             const parent = document.getElementById(`${type}-selector`);
-            parent.querySelectorAll('.num-btn').forEach(btn => {
-                btn.classList.toggle('active', parseInt(btn.dataset.val) === val);
-            });
+            if (parent) {
+                parent.querySelectorAll('.num-btn').forEach(btn => {
+                    btn.classList.toggle('active', parseInt(btn.dataset.val) === val);
+                });
+            }
             updateProgress();
         }
 
@@ -684,14 +710,13 @@
         function saveCurrentState() {
             const p = profiles[activeId];
             p.server = document.getElementById('server-name').value;
-            p.checks = {};
+            p.checks = p.checks || {};
             coreObjectives.forEach(obj => {
                 const cb = document.getElementById(obj.id);
                 if (cb) p.checks[obj.id] = cb.checked;
             });
             saveAll();
             
-            // Re-render options with a small delay for input fields to avoid flickering
             clearTimeout(inputTimeout);
             inputTimeout = setTimeout(() => {
                 renderProfileOptions();
